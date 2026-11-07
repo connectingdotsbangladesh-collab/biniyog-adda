@@ -8,6 +8,7 @@ import { RegistrationForm } from './components/RegistrationForm';
 import { FAQ } from './components/FAQ';
 import { Footer } from './components/Footer';
 import { StickyMobileCta } from './components/StickyMobileCta';
+import { BackgroundPatterns } from './components/BackgroundPatterns';
 
 const AdminDashboard = lazy(() =>
   import('./components/AdminDashboard').then((mod) => ({ default: mod.AdminDashboard }))
@@ -48,8 +49,8 @@ export function App() {
     return (
       <Suspense
         fallback={
-          <div className="min-h-screen bg-[#081712] flex items-center justify-center">
-            <div className="w-8 h-8 border-2 border-posh-gold border-t-transparent rounded-full animate-spin"></div>
+          <div className="min-h-screen bg-[#06130E] flex items-center justify-center">
+            <div className="w-8 h-8 border-2 border-[#C9A66B] border-t-transparent rounded-full animate-spin"></div>
           </div>
         }
       >
@@ -59,25 +60,31 @@ export function App() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#081712] text-posh-text-primary selection:bg-posh-gold/30 selection:text-posh-sand relative">
-      {/* Header */}
-      <Header onAdminClick={navigateToAdmin} />
+    <div className="min-h-screen flex flex-col bg-[#06130E] text-[#F8F5EE] selection:bg-[#C9A66B]/30 selection:text-[#FFFFFF] relative overflow-x-hidden">
+      {/* Background Decorative Patterns */}
+      <BackgroundPatterns />
 
-      {/* Main Content */}
-      <main className="flex-1">
-        <Hero />
-        <Topics />
-        <WhoFor />
-        <SpeakerAndDetails />
-        <RegistrationForm />
-        <FAQ />
-      </main>
+      {/* Main Content Layers */}
+      <div className="relative z-10 flex flex-col min-h-screen">
+        {/* Header */}
+        <Header onAdminClick={navigateToAdmin} />
 
-      {/* Footer */}
-      <Footer onAdminClick={navigateToAdmin} />
+        {/* Main Content */}
+        <main className="flex-1">
+          <Hero />
+          <Topics />
+          <WhoFor />
+          <SpeakerAndDetails />
+          <RegistrationForm />
+          <FAQ />
+        </main>
 
-      {/* Sticky Mobile Registration CTA */}
-      <StickyMobileCta />
+        {/* Footer */}
+        <Footer onAdminClick={navigateToAdmin} />
+
+        {/* Sticky Mobile Registration CTA */}
+        <StickyMobileCta />
+      </div>
     </div>
   );
 }

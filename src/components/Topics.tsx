@@ -34,33 +34,33 @@ export const Topics: React.FC = () => {
   ];
 
   return (
-    <section id="topics" className="py-16 sm:py-28 border-b border-[#1F4738]/60 relative">
+    <section id="topics" className="py-16 sm:py-28 border-b border-[#204E3C]/60 relative">
       <div className="max-w-[1160px] mx-auto px-4 sm:px-8 relative z-10">
         
-        {/* Section Header with Gradient Heading */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 sm:gap-6 mb-12 sm:mb-16 pb-6 sm:pb-8 border-b border-[#1F4738]/60">
+        {/* Section Header with High Contrast */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 sm:gap-6 mb-12 sm:mb-16 pb-6 sm:pb-8 border-b border-[#204E3C]/60">
           <div>
-            <div className="text-[11px] sm:text-xs uppercase tracking-widest font-semibold text-posh-gold mb-2 flex items-center gap-2">
-              <span className="w-1.5 h-1.5 rounded-full bg-posh-gold shadow-[0_0_8px_#C9A66B]"></span>
+            <div className="text-xs uppercase tracking-widest font-semibold text-[#C9A66B] mb-2 flex items-center gap-2">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#C9A66B] shadow-[0_0_8px_#C9A66B]"></span>
               <span>সিলেবাস ও আলোচনার পরিধি</span>
             </div>
-            <h2 className="text-2xl sm:text-4xl lg:text-[44px] font-serif-bn font-bold text-posh-text-primary tracking-tight">
+            <h2 className="text-2xl sm:text-4xl lg:text-[46px] font-serif-bn font-bold text-white tracking-tight">
               কী নিয়ে আলোচনা হবে?
             </h2>
           </div>
-          <p className="max-w-md text-sm sm:text-base text-posh-text-secondary leading-relaxed">
+          <p className="max-w-md text-base sm:text-lg text-[#D1E2D9] leading-relaxed">
             বাস্তবধর্মী দৃষ্টিভঙ্গি ও অভিজ্ঞতার আলোকে সাজানো মূল আলোচনার বিষয়গুলো।
           </p>
         </div>
 
-        {/* 4 Posh Glass Cards with Luxury Gradient Hover */}
+        {/* 4 Posh Glass Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
           {topics.map((t, idx) => {
             const Icon = t.icon;
             return (
               <div
                 key={idx}
-                className="posh-glass-card rounded-2xl p-6 sm:p-8 flex flex-col justify-between group transition-all duration-300"
+                className="posh-glass-card rounded-2xl sm:rounded-3xl p-6 sm:p-9 flex flex-col justify-between group transition-all duration-300"
               >
                 <div>
                   {/* Top Bar with Number & Focus Badge */}
@@ -68,26 +68,28 @@ export const Topics: React.FC = () => {
                     <span className="font-serif-bn text-3xl sm:text-4xl font-bold text-gold-gradient">
                       {t.number}
                     </span>
-                    <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-white/[0.04] border border-[#1F4738]/80 text-[11px] sm:text-xs font-medium text-posh-gold-light">
-                      <Icon className="w-3.5 h-3.5 text-posh-gold" />
+                    <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/[0.06] border border-[#204E3C] text-xs sm:text-[13px] font-semibold text-[#F7E7CD]">
+                      <Icon className="w-3.5 h-3.5 text-[#C9A66B]" />
                       <span>{t.focus}</span>
                     </div>
                   </div>
 
                   {/* Title */}
-                  <h3 className="text-xl sm:text-2xl font-serif-bn font-bold text-posh-sand mb-3 group-hover:text-posh-gold-light transition-colors leading-snug">
+                  <h3 className="text-xl sm:text-2xl font-serif-bn font-bold text-white mb-3 group-hover:text-[#F3DFBA] transition-colors leading-snug">
                     {t.title}
                   </h3>
 
                   {/* Description */}
-                  <p className="text-sm sm:text-base text-posh-text-secondary leading-relaxed font-normal">
+                  <p className="text-base sm:text-[17px] text-[#D8E8DF] leading-relaxed font-normal">
                     {t.description}
                   </p>
                 </div>
 
-                <div className="mt-6 pt-4 border-t border-[#1F4738]/50 flex items-center justify-between text-xs text-posh-text-muted">
-                  <span>কর্মশালার মডিউল 0{idx + 1}</span>
-                  <span className="text-posh-gold/80 group-hover:translate-x-1 transition-transform">অংশগ্রহণভিত্তিক আলোচনা →</span>
+                <div className="mt-7 pt-4 border-t border-[#204E3C]/60 flex items-center justify-between text-xs sm:text-sm text-[#95B2A4]">
+                  <span>মডিউল 0{idx + 1}</span>
+                  <span className="text-[#C9A66B] font-medium group-hover:translate-x-1 transition-transform">
+                    অংশগ্রহণভিত্তিক আলোচনা →
+                  </span>
                 </div>
               </div>
             );

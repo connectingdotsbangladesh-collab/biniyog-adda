@@ -6,19 +6,14 @@
   html {
     scroll-behavior: smooth;
     font-size: 16px;
-    background-color: #081712;
-    color: #F5EFE8;
+    background-color: #06130E;
+    color: #F8F5EE;
   }
   
   body {
-    line-height: 1.8;
-    color: #F5EFE8;
-    background-color: #081712;
-    background-image: 
-      radial-gradient(ellipse 80% 50% at 50% -20%, rgba(31, 71, 56, 0.45), transparent 70%),
-      radial-gradient(ellipse 60% 40% at 90% 40%, rgba(201, 166, 107, 0.06), transparent 70%),
-      radial-gradient(ellipse 60% 40% at 10% 70%, rgba(31, 71, 56, 0.25), transparent 70%);
-    background-attachment: fixed;
+    line-height: 1.85;
+    color: #F8F5EE;
+    background-color: #06130E;
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   }
 
@@ -29,7 +24,7 @@
   }
 
   p, span, a, button, input, textarea, select {
-    line-height: 1.75;
+    line-height: 1.8;
   }
 
   /* Custom dark luxury scrollbar */
@@ -37,10 +32,10 @@
     width: 8px;
   }
   ::-webkit-scrollbar-track {
-    background: #081712;
+    background: #06130E;
   }
   ::-webkit-scrollbar-thumb {
-    background: #1F4738;
+    background: #1B4434;
     border-radius: 9999px;
   }
   ::-webkit-scrollbar-thumb:hover {
@@ -54,35 +49,62 @@
   }
 }
 
-/* Luxury gradient text utility */
+/* Luxury geometric & architectural patterns */
+.luxury-pattern-dots {
+  background-image: 
+    radial-gradient(rgba(201, 166, 107, 0.14) 1px, transparent 1px),
+    radial-gradient(rgba(45, 107, 85, 0.22) 1px, transparent 1px);
+  background-size: 32px 32px;
+  background-position: 0 0, 16px 16px;
+}
+
+.luxury-pattern-grid {
+  background-image: 
+    linear-gradient(to right, rgba(31, 71, 56, 0.15) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(31, 71, 56, 0.15) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+/* Concentric rings pattern like the reference mood board */
+.concentric-rings {
+  background-image: radial-gradient(circle, transparent 20%, rgba(31, 71, 56, 0.25) 21%, transparent 22%, transparent 40%, rgba(31, 71, 56, 0.2) 41%, transparent 42%, transparent 60%, rgba(201, 166, 107, 0.1) 61%, transparent 62%, transparent 80%, rgba(31, 71, 56, 0.15) 81%, transparent 82%);
+}
+
+/* Luxury gradient text utility - high luminosity */
 .text-gold-gradient {
-  background: linear-gradient(135deg, #F8F3EA 0%, #E8D3B0 40%, #C9A66B 80%, #9A773F 100%);
+  background: linear-gradient(135deg, #FFFFFF 0%, #F5E5C9 30%, #D8B270 70%, #A8813C 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.text-champagne-gradient {
+  background: linear-gradient(135deg, #FFFFFF 0%, #EFE8DC 50%, #C9A66B 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 .text-emerald-gradient {
-  background: linear-gradient(135deg, #F4EFEA 0%, #A7C4B6 50%, #7DA594 100%);
+  background: linear-gradient(135deg, #FFFFFF 0%, #BFE0D2 50%, #7DA594 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 /* Luxury card surface */
 .posh-glass-card {
-  background: linear-gradient(180deg, rgba(18, 45, 35, 0.7) 0%, rgba(9, 23, 17, 0.85) 100%);
+  background: linear-gradient(180deg, rgba(16, 42, 32, 0.75) 0%, rgba(8, 20, 15, 0.9) 100%);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(31, 71, 56, 0.6);
-  box-shadow: 0 12px 40px -10px rgba(0, 0, 0, 0.5), inset 0 1px 0 0 rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(41, 94, 74, 0.65);
+  box-shadow: 0 16px 40px -10px rgba(0, 0, 0, 0.55), inset 0 1px 0 0 rgba(255, 255, 255, 0.08);
 }
 
 .posh-glass-card:hover {
-  border-color: rgba(201, 166, 107, 0.35);
-  box-shadow: 0 16px 48px -10px rgba(0, 0, 0, 0.6), 0 0 25px -5px rgba(201, 166, 107, 0.12), inset 0 1px 0 0 rgba(201, 166, 107, 0.15);
+  border-color: rgba(201, 166, 107, 0.45);
+  box-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.65), 0 0 30px -5px rgba(201, 166, 107, 0.16), inset 0 1px 0 0 rgba(201, 166, 107, 0.2);
 }
 
 .posh-glow-badge {
-  background: linear-gradient(135deg, rgba(201, 166, 107, 0.12) 0%, rgba(31, 71, 56, 0.35) 100%);
-  border: 1px solid rgba(201, 166, 107, 0.3);
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  background: linear-gradient(135deg, rgba(201, 166, 107, 0.15) 0%, rgba(31, 71, 56, 0.45) 100%);
+  border: 1px solid rgba(201, 166, 107, 0.4);
+  box-shadow: 0 2px 14px rgba(0, 0, 0, 0.25), 0 0 12px rgba(201, 166, 107, 0.15);
 }

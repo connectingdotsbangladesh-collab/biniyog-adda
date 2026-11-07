@@ -30,19 +30,19 @@ export const WhoFor: React.FC = () => {
   ];
 
   return (
-    <section id="audience" className="py-16 sm:py-28 border-b border-[#1F4738]/60 relative">
+    <section id="audience" className="py-16 sm:py-28 border-b border-[#204E3C]/60 relative">
       <div className="max-w-[1160px] mx-auto px-4 sm:px-8 relative z-10">
         
         {/* Section Header */}
         <div className="max-w-2xl mb-12 sm:mb-16">
-          <div className="text-[11px] sm:text-xs uppercase tracking-widest font-semibold text-posh-gold mb-2 flex items-center gap-2">
-            <span className="w-1.5 h-1.5 rounded-full bg-posh-gold shadow-[0_0_8px_#C9A66B]"></span>
+          <div className="text-xs uppercase tracking-widest font-semibold text-[#C9A66B] mb-2 flex items-center gap-2">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#C9A66B] shadow-[0_0_8px_#C9A66B]"></span>
             <span>অংশগ্রহণকারী প্রোফাইল</span>
           </div>
-          <h2 className="text-2xl sm:text-4xl lg:text-[44px] font-serif-bn font-bold text-posh-text-primary tracking-tight">
+          <h2 className="text-2xl sm:text-4xl lg:text-[46px] font-serif-bn font-bold text-white tracking-tight">
             কারা অংশ নিতে পারেন?
           </h2>
-          <p className="mt-3 text-sm sm:text-base text-posh-text-secondary leading-relaxed">
+          <p className="mt-3 text-base sm:text-lg text-[#D1E2D9] leading-relaxed">
             নতুন কিছু শেখা, অভিজ্ঞতা যাচাই ও বাস্তবসম্মত পদক্ষেপ নেওয়ার মানসিকতা যাঁদের রয়েছে।
           </p>
         </div>
@@ -54,25 +54,25 @@ export const WhoFor: React.FC = () => {
             return (
               <div
                 key={idx}
-                className="posh-glass-card rounded-2xl p-6 flex flex-col justify-between group transition-all duration-300"
+                className="posh-glass-card rounded-2xl p-6 sm:p-7 flex flex-col justify-between group transition-all duration-300"
               >
                 <div>
                   <div className="flex items-center justify-between mb-4">
-                    <span className="text-[11px] font-mono text-posh-gold tracking-wider">
+                    <span className="text-xs font-mono font-semibold text-[#C9A66B] tracking-wider">
                       COHORT 0{idx + 1}
                     </span>
-                    <div className="w-8 h-8 rounded-lg bg-posh-gold/10 border border-posh-gold/25 flex items-center justify-center text-posh-gold">
-                      <Icon className="w-4 h-4" />
+                    <div className="w-9 h-9 rounded-xl bg-[#C9A66B]/15 border border-[#C9A66B]/30 flex items-center justify-center text-[#F5E5C9]">
+                      <Icon className="w-4 h-4 text-[#C9A66B]" />
                     </div>
                   </div>
 
-                  <h3 className="text-lg sm:text-xl font-serif-bn font-bold text-posh-sand mb-1.5 group-hover:text-posh-gold-light transition-colors">
+                  <h3 className="text-xl font-serif-bn font-bold text-white mb-2 group-hover:text-[#F3DFBA] transition-colors">
                     {group.title}
                   </h3>
-                  <span className="text-xs font-medium text-posh-sage-light block mb-3 pb-3 border-b border-[#1F4738]/50">
+                  <span className="text-xs sm:text-[13px] font-medium text-[#B9D8CA] block mb-3 pb-3 border-b border-[#204E3C]/60">
                     {group.subtitle}
                   </span>
-                  <p className="text-xs sm:text-sm text-posh-text-secondary leading-relaxed">
+                  <p className="text-sm sm:text-[15px] text-[#D4E4DC] leading-relaxed">
                     {group.desc}
                   </p>
                 </div>
@@ -81,18 +81,18 @@ export const WhoFor: React.FC = () => {
           })}
         </div>
 
-        {/* Bottom Posh Pill Feature Bar (Direct tribute to bottom banner in user image) */}
-        <div className="mt-12 sm:mt-16 p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-[#122D23]/80 via-[#0D241C]/90 to-[#122D23]/80 border border-[#1F4738]/80 flex flex-wrap items-center justify-center gap-6 sm:gap-12 text-xs sm:text-sm font-medium text-posh-text-secondary">
-          <div className="flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-posh-gold"></span>
+        {/* Bottom Posh Pill Feature Bar */}
+        <div className="mt-12 sm:mt-16 p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-[#122D23]/90 via-[#0A1D15]/95 to-[#122D23]/90 border border-[#204E3C] flex flex-wrap items-center justify-center gap-6 sm:gap-12 text-sm sm:text-base font-semibold text-white shadow-lg">
+          <div className="flex items-center gap-2.5">
+            <span className="w-2.5 h-2.5 rounded-full bg-[#C9A66B] shadow-[0_0_8px_#C9A66B]"></span>
             <span>বাস্তবধর্মী বিশ্লেষণ</span>
           </div>
-          <div className="flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-posh-gold"></span>
+          <div className="flex items-center gap-2.5">
+            <span className="w-2.5 h-2.5 rounded-full bg-[#C9A66B] shadow-[0_0_8px_#C9A66B]"></span>
             <span>সরাসরি প্রশ্নোত্তর</span>
           </div>
-          <div className="flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-posh-gold"></span>
+          <div className="flex items-center gap-2.5">
+            <span className="w-2.5 h-2.5 rounded-full bg-[#C9A66B] shadow-[0_0_8px_#C9A66B]"></span>
             <span>পরবর্তী রূপরেখা অনুশীলন</span>
           </div>
         </div>
