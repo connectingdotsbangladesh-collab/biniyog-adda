@@ -6,13 +6,19 @@
   html {
     scroll-behavior: smooth;
     font-size: 16px;
-    background-color: #F6F2E9;
+    background-color: #081712;
+    color: #F5EFE8;
   }
   
   body {
     line-height: 1.8;
-    color: #243C34;
-    background-color: #F6F2E9;
+    color: #F5EFE8;
+    background-color: #081712;
+    background-image: 
+      radial-gradient(ellipse 80% 50% at 50% -20%, rgba(31, 71, 56, 0.45), transparent 70%),
+      radial-gradient(ellipse 60% 40% at 90% 40%, rgba(201, 166, 107, 0.06), transparent 70%),
+      radial-gradient(ellipse 60% 40% at 10% 70%, rgba(31, 71, 56, 0.25), transparent 70%);
+    background-attachment: fixed;
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   }
 
@@ -26,50 +32,57 @@
     line-height: 1.75;
   }
 
-  /* Custom subtle scrollbar */
+  /* Custom dark luxury scrollbar */
   ::-webkit-scrollbar {
-    width: 7px;
+    width: 8px;
   }
   ::-webkit-scrollbar-track {
-    background: #F6F2E9;
+    background: #081712;
   }
   ::-webkit-scrollbar-thumb {
-    background: #D8DED2;
+    background: #1F4738;
     border-radius: 9999px;
   }
   ::-webkit-scrollbar-thumb:hover {
-    background: #B99554;
+    background: #C9A66B;
   }
 
   /* Accessible focus states with refined gold ring */
   :focus-visible {
-    outline: 2px solid #B99554;
+    outline: 2px solid #C9A66B;
     outline-offset: 3px;
   }
 }
 
-/* Bespoke print/editorial decorative elements */
-.paper-texture {
-  background-image: radial-gradient(rgba(23, 62, 53, 0.04) 1px, transparent 0);
-  background-size: 24px 24px;
+/* Luxury gradient text utility */
+.text-gold-gradient {
+  background: linear-gradient(135deg, #F8F3EA 0%, #E8D3B0 40%, #C9A66B 80%, #9A773F 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
-.ticket-notch-left {
-  position: relative;
-}
-.ticket-notch-left::before {
-  content: '';
-  position: absolute;
-  left: -12px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  background-color: #F6F2E9;
+.text-emerald-gradient {
+  background: linear-gradient(135deg, #F4EFEA 0%, #A7C4B6 50%, #7DA594 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
-.editorial-rule {
-  height: 1px;
-  background: linear-gradient(90deg, transparent 0%, #D8DED2 15%, #D8DED2 85%, transparent 100%);
+/* Luxury card surface */
+.posh-glass-card {
+  background: linear-gradient(180deg, rgba(18, 45, 35, 0.7) 0%, rgba(9, 23, 17, 0.85) 100%);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(31, 71, 56, 0.6);
+  box-shadow: 0 12px 40px -10px rgba(0, 0, 0, 0.5), inset 0 1px 0 0 rgba(255, 255, 255, 0.06);
+}
+
+.posh-glass-card:hover {
+  border-color: rgba(201, 166, 107, 0.35);
+  box-shadow: 0 16px 48px -10px rgba(0, 0, 0, 0.6), 0 0 25px -5px rgba(201, 166, 107, 0.12), inset 0 1px 0 0 rgba(201, 166, 107, 0.15);
+}
+
+.posh-glow-badge {
+  background: linear-gradient(135deg, rgba(201, 166, 107, 0.12) 0%, rgba(31, 71, 56, 0.35) 100%);
+  border: 1px solid rgba(201, 166, 107, 0.3);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
 }

@@ -34,14 +34,14 @@ export const RegistrationForm: React.FC = () => {
   // If registration is closed via configuration
   if (!eventConfig.registrationOpen) {
     return (
-      <section id="registration" className="py-12 sm:py-24 bg-brand-ivory border-b border-brand-divider/70">
+      <section id="registration" className="py-16 sm:py-28 border-b border-[#1F4738]/60">
         <div className="max-w-xl mx-auto px-4 text-center">
-          <div className="bg-brand-surface rounded-xl p-6 sm:p-10 border border-brand-divider/70 shadow-sm">
-            <Info className="w-10 h-10 sm:w-12 sm:h-12 text-brand-gold mx-auto mb-3 sm:mb-4" />
-            <h2 className="text-xl sm:text-3xl font-serif-bn font-bold text-brand-forest mb-2 sm:mb-3">
+          <div className="posh-glass-card rounded-2xl p-6 sm:p-10 border border-[#1F4738] shadow-luxury-glow">
+            <Info className="w-10 h-10 sm:w-12 sm:h-12 text-posh-gold mx-auto mb-3 sm:mb-4" />
+            <h2 className="text-xl sm:text-3xl font-serif-bn font-bold text-posh-text-primary mb-2 sm:mb-3">
               অংশ নিতে আগ্রহী?
             </h2>
-            <p className="text-sm sm:text-base text-brand-secondary">
+            <p className="text-sm sm:text-base text-posh-text-secondary">
               প্রাথমিক নিবন্ধন আপাতত বন্ধ রয়েছে। পরবর্তী ঘোষণার জন্য অপেক্ষা করুন।
             </p>
           </div>
@@ -157,32 +157,36 @@ export const RegistrationForm: React.FC = () => {
   };
 
   return (
-    <section id="registration" className="py-12 sm:py-24 bg-brand-ivory border-b border-brand-divider/70 paper-texture scroll-mt-20">
-      <div className="max-w-[760px] mx-auto px-3.5 sm:px-8">
+    <section id="registration" className="py-16 sm:py-28 border-b border-[#1F4738]/60 relative scroll-mt-20">
+      
+      {/* Background Glow */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-[#14392B]/30 rounded-full blur-[140px] pointer-events-none"></div>
+
+      <div className="max-w-[760px] mx-auto px-4 sm:px-8 relative z-10">
         
-        {/* Form Container (Bespoke Salon RSVP Card) */}
-        <div className="bg-brand-surface rounded-xl sm:rounded-2xl p-5 sm:p-12 border border-brand-divider shadow-[0_8px_32px_-12px_rgba(23,62,53,0.08)] relative">
+        {/* Form Container (Posh Glass RSVP Card) */}
+        <div className="posh-glass-card rounded-2xl sm:rounded-3xl p-6 sm:p-12 shadow-luxury-glow relative">
           
           {/* Header */}
-          <div className="text-center mb-7 sm:mb-10 pb-6 sm:pb-8 border-b border-brand-divider/70">
-            <span className="text-[11px] sm:text-xs uppercase tracking-widest font-semibold text-brand-gold-deep mb-1.5 sm:mb-2 inline-block">
+          <div className="text-center mb-8 sm:mb-10 pb-6 sm:pb-8 border-b border-[#1F4738]/60">
+            <span className="text-[11px] sm:text-xs uppercase tracking-widest font-semibold text-posh-gold mb-2 inline-block">
               প্রাথমিক আগ্রহ নিবন্ধন
             </span>
-            <h2 className="text-2xl sm:text-4xl font-serif-bn font-bold text-brand-forest mt-0.5 mb-2 sm:mb-3">
+            <h2 className="text-2xl sm:text-4xl font-serif-bn font-bold text-posh-text-primary mt-1 mb-2 sm:mb-3">
               অংশ নিতে আগ্রহী?
             </h2>
-            <p className="text-sm sm:text-base text-brand-secondary/90 max-w-lg mx-auto leading-relaxed">
+            <p className="text-sm sm:text-base text-posh-text-secondary max-w-lg mx-auto leading-relaxed">
               নিচের ফর্মে আপনার তথ্য দিন। আয়োজনের বিস্তারিত চূড়ান্ত হলে আপনার সঙ্গে যোগাযোগ করা হবে।
             </p>
           </div>
 
           {/* Backend Status Notice if not configured */}
           {!backendReady && (
-            <div className="mb-6 sm:mb-8 p-3.5 sm:p-4 rounded-xl bg-amber-50/80 border border-amber-200/90 text-amber-950 text-xs sm:text-sm flex items-start gap-2.5 sm:gap-3">
-              <AlertCircle className="w-4 h-4 sm:w-5 sm:h-5 text-amber-700 flex-shrink-0 mt-0.5" />
+            <div className="mb-6 sm:mb-8 p-4 rounded-xl bg-[#143026]/90 border border-posh-gold/30 text-posh-gold-light text-xs sm:text-sm flex items-start gap-3">
+              <AlertCircle className="w-5 h-5 text-posh-gold flex-shrink-0 mt-0.5" />
               <div>
-                <p className="font-semibold text-amber-900">ডাটাবেজ সংযোগ অপেক্ষমান</p>
-                <p className="text-amber-800 text-[11px] sm:text-xs mt-1 leading-relaxed">
+                <p className="font-semibold text-posh-sand">ডাটাবেজ সংযোগ অপেক্ষমান</p>
+                <p className="text-posh-text-secondary text-[11px] sm:text-xs mt-1 leading-relaxed">
                   সিস্টেমের সততা বজায় রাখতে কোনো কৃত্রিম বার্তা দেখানো হচ্ছে না। `.env` ফাইলে Supabase ক্রেডেনশিয়াল যুক্ত করামাত্র আগ্রহ সরাসরি আপনার ডাটাবেজে জমা হবে।
                 </p>
               </div>
@@ -191,14 +195,14 @@ export const RegistrationForm: React.FC = () => {
 
           {/* Success State */}
           {submitStatus === 'success' ? (
-            <div className="text-center py-8 sm:py-10 px-2 sm:px-4 space-y-3 sm:space-y-4">
-              <div className="w-14 h-14 sm:w-16 sm:h-16 bg-brand-forest text-brand-gold rounded-full flex items-center justify-center mx-auto shadow-md">
-                <CheckCircle2 className="w-7 h-7 sm:w-8 sm:h-8" />
+            <div className="text-center py-8 sm:py-10 px-2 sm:px-4 space-y-4">
+              <div className="w-16 h-16 bg-gradient-to-br from-[#C9A66B] to-[#9A773F] text-[#081712] rounded-full flex items-center justify-center mx-auto shadow-button-gold">
+                <CheckCircle2 className="w-8 h-8" />
               </div>
-              <h3 ref={statusHeadingRef} tabIndex={-1} className="text-xl sm:text-3xl font-serif-bn font-bold text-brand-forest">
+              <h3 ref={statusHeadingRef} tabIndex={-1} className="text-2xl sm:text-3xl font-serif-bn font-bold text-posh-text-primary">
                 আপনার আগ্রহ নিবন্ধিত হয়েছে।
               </h3>
-              <p className="text-sm sm:text-base text-brand-text/90 leading-relaxed max-w-md mx-auto">
+              <p className="text-sm sm:text-base text-posh-text-secondary leading-relaxed max-w-md mx-auto">
                 আয়োজনের বিস্তারিত চূড়ান্ত হলে যোগাযোগ করা হবে। এটি আসন নিশ্চিতকরণ নয়।
               </p>
               <div className="pt-4 sm:pt-6">
@@ -217,7 +221,7 @@ export const RegistrationForm: React.FC = () => {
                       honeypot: '',
                     });
                   }}
-                  className="text-xs sm:text-sm font-medium text-brand-forest hover:text-brand-gold-deep underline underline-offset-4 min-h-[44px] inline-flex items-center"
+                  className="text-xs sm:text-sm font-medium text-posh-gold hover:text-posh-gold-light underline underline-offset-4 min-h-[44px] inline-flex items-center"
                 >
                   প্রয়োজনে আরেকটি তথ্য জমা দিন
                 </button>
@@ -228,10 +232,10 @@ export const RegistrationForm: React.FC = () => {
               
               {/* Overall Failure Alert */}
               {submitStatus === 'error' && (
-                <div role="alert" className="p-3.5 sm:p-4 rounded-xl bg-rose-50 border border-rose-200 text-rose-900 text-xs sm:text-sm flex items-start gap-2.5 sm:gap-3">
-                  <AlertCircle className="w-4 h-4 sm:w-5 sm:h-5 text-rose-600 flex-shrink-0 mt-0.5" />
+                <div role="alert" className="p-4 rounded-xl bg-rose-950/70 border border-rose-500/50 text-rose-200 text-xs sm:text-sm flex items-start gap-3">
+                  <AlertCircle className="w-5 h-5 text-rose-400 flex-shrink-0 mt-0.5" />
                   <div>
-                    <p className="font-semibold">ত্রুটি</p>
+                    <p className="font-semibold text-rose-100">ত্রুটি</p>
                     <p className="mt-0.5 text-[11px] sm:text-xs">
                       {generalErrorMessage || 'তথ্য জমা হয়নি। আপনার লেখা তথ্য রেখে দেওয়া হয়েছে। অনুগ্রহ করে আবার চেষ্টা করুন।'}
                     </p>
@@ -252,10 +256,10 @@ export const RegistrationForm: React.FC = () => {
                 />
               </div>
 
-              {/* 1. Name (16px base font size prevents iOS zoom) */}
+              {/* 1. Name */}
               <div>
-                <label htmlFor="name" className="block text-xs sm:text-sm font-medium text-brand-forest mb-1.5">
-                  আপনার নাম <span className="text-rose-600 font-bold" aria-label="আবশ্যক">*</span>
+                <label htmlFor="name" className="block text-xs sm:text-sm font-medium text-posh-sand mb-1.5">
+                  আপনার নাম <span className="text-posh-gold font-bold" aria-label="আবশ্যক">*</span>
                 </label>
                 <input
                   ref={nameRef}
@@ -269,21 +273,21 @@ export const RegistrationForm: React.FC = () => {
                     setFormData({ ...formData, name: e.target.value });
                     if (fieldErrors.name) setFieldErrors({ ...fieldErrors, name: '' });
                   }}
-                  className={`w-full px-3.5 sm:px-4 py-3 sm:py-3.5 rounded-lg border text-base text-brand-text placeholder:text-brand-secondary/50 transition-all min-h-[46px] ${
+                  className={`w-full px-4 py-3.5 rounded-xl border text-base text-posh-text-primary placeholder:text-posh-text-muted/60 transition-all min-h-[48px] bg-[#06140F]/90 focus:bg-[#091D16] ${
                     fieldErrors.name 
-                      ? 'border-rose-400 bg-rose-50/20' 
-                      : 'border-brand-divider bg-brand-ivory-light/50 focus:bg-white focus:border-brand-gold'
+                      ? 'border-rose-500 bg-rose-950/20' 
+                      : 'border-[#1F4738] focus:border-posh-gold focus:ring-1 focus:ring-posh-gold'
                   }`}
                 />
                 {fieldErrors.name && (
-                  <p className="mt-1.5 text-xs text-rose-600 font-medium">{fieldErrors.name}</p>
+                  <p className="mt-1.5 text-xs text-rose-400 font-medium">{fieldErrors.name}</p>
                 )}
               </div>
 
               {/* 2. Phone */}
               <div>
-                <label htmlFor="phone" className="block text-xs sm:text-sm font-medium text-brand-forest mb-1.5">
-                  মোবাইল / WhatsApp নম্বর <span className="text-rose-600 font-bold" aria-label="আবশ্যক">*</span>
+                <label htmlFor="phone" className="block text-xs sm:text-sm font-medium text-posh-sand mb-1.5">
+                  মোবাইল / WhatsApp নম্বর <span className="text-posh-gold font-bold" aria-label="আবশ্যক">*</span>
                 </label>
                 <input
                   ref={phoneRef}
@@ -298,47 +302,47 @@ export const RegistrationForm: React.FC = () => {
                     setFormData({ ...formData, phone: e.target.value });
                     if (fieldErrors.phone) setFieldErrors({ ...fieldErrors, phone: '' });
                   }}
-                  className={`w-full px-3.5 sm:px-4 py-3 sm:py-3.5 rounded-lg border text-base text-brand-text placeholder:text-brand-secondary/50 transition-all min-h-[46px] ${
+                  className={`w-full px-4 py-3.5 rounded-xl border text-base text-posh-text-primary placeholder:text-posh-text-muted/60 transition-all min-h-[48px] bg-[#06140F]/90 focus:bg-[#091D16] ${
                     fieldErrors.phone 
-                      ? 'border-rose-400 bg-rose-50/20' 
-                      : 'border-brand-divider bg-brand-ivory-light/50 focus:bg-white focus:border-brand-gold'
+                      ? 'border-rose-500 bg-rose-950/20' 
+                      : 'border-[#1F4738] focus:border-posh-gold focus:ring-1 focus:ring-posh-gold'
                   }`}
                 />
-                <span className="text-[11px] sm:text-[12px] text-brand-secondary/80 block mt-1">
+                <span className="text-[11px] sm:text-[12px] text-posh-text-muted block mt-1">
                   বাংলা বা ইংরেজি উভয় সংখ্যা গ্রহণযোগ্য (যেমন: 01712345678 বা ০১৭১২৩৪৫৬৭৮)
                 </span>
                 {fieldErrors.phone && (
-                  <p className="mt-1.5 text-xs text-rose-600 font-medium">{fieldErrors.phone}</p>
+                  <p className="mt-1.5 text-xs text-rose-400 font-medium">{fieldErrors.phone}</p>
                 )}
               </div>
 
               {/* 3. Occupation */}
               <div>
-                <label htmlFor="occupation" className="block text-xs sm:text-sm font-medium text-brand-forest mb-1.5">
-                  আপনার পেশা <span className="text-rose-600 font-bold" aria-label="আবশ্যক">*</span>
+                <label htmlFor="occupation" className="block text-xs sm:text-sm font-medium text-posh-sand mb-1.5">
+                  আপনার পেশা <span className="text-posh-gold font-bold" aria-label="আবশ্যক">*</span>
                 </label>
                 <select
                   id="occupation"
                   required
                   value={formData.occupation}
                   onChange={(e) => setFormData({ ...formData, occupation: e.target.value })}
-                  className="w-full px-3.5 sm:px-4 py-3 sm:py-3.5 rounded-lg border border-brand-divider bg-brand-ivory-light/50 focus:bg-white text-base text-brand-text focus:border-brand-gold transition-all min-h-[46px]"
+                  className="w-full px-4 py-3.5 rounded-xl border border-[#1F4738] bg-[#06140F]/90 text-base text-posh-text-primary focus:border-posh-gold focus:ring-1 focus:ring-posh-gold transition-all min-h-[48px]"
                 >
-                  <option value="চাকরিজীবী">চাকরিজীবী</option>
-                  <option value="ব্যবসায়ী বা উদ্যোক্তা">ব্যবসায়ী বা উদ্যোক্তা</option>
-                  <option value="ফ্রিল্যান্সার">ফ্রিল্যান্সার</option>
-                  <option value="শিক্ষার্থী">শিক্ষার্থী</option>
-                  <option value="অন্যান্য">অন্যান্য</option>
+                  <option value="চাকরিজীবী" className="bg-[#081712] text-[#F5EFE8]">চাকরিজীবী</option>
+                  <option value="ব্যবসায়ী বা উদ্যোক্তা" className="bg-[#081712] text-[#F5EFE8]">ব্যবসায়ী বা উদ্যোক্তা</option>
+                  <option value="ফ্রিল্যান্সার" className="bg-[#081712] text-[#F5EFE8]">ফ্রিল্যান্সার</option>
+                  <option value="শিক্ষার্থী" className="bg-[#081712] text-[#F5EFE8]">শিক্ষার্থী</option>
+                  <option value="অন্যান্য" className="bg-[#081712] text-[#F5EFE8]">অন্যান্য</option>
                 </select>
                 {fieldErrors.occupation && (
-                  <p className="mt-1.5 text-xs text-rose-600 font-medium">{fieldErrors.occupation}</p>
+                  <p className="mt-1.5 text-xs text-rose-400 font-medium">{fieldErrors.occupation}</p>
                 )}
               </div>
 
               {/* 4. Area / District */}
               <div>
-                <label htmlFor="area" className="block text-xs sm:text-sm font-medium text-brand-forest mb-1.5">
-                  এলাকা / জেলা <span className="text-rose-600 font-bold" aria-label="আবশ্যক">*</span>
+                <label htmlFor="area" className="block text-xs sm:text-sm font-medium text-posh-sand mb-1.5">
+                  এলাকা / জেলা <span className="text-posh-gold font-bold" aria-label="আবশ্যক">*</span>
                 </label>
                 <input
                   ref={areaRef}
@@ -351,21 +355,21 @@ export const RegistrationForm: React.FC = () => {
                     setFormData({ ...formData, area: e.target.value });
                     if (fieldErrors.area) setFieldErrors({ ...fieldErrors, area: '' });
                   }}
-                  className={`w-full px-3.5 sm:px-4 py-3 sm:py-3.5 rounded-lg border text-base text-brand-text placeholder:text-brand-secondary/50 transition-all min-h-[46px] ${
+                  className={`w-full px-4 py-3.5 rounded-xl border text-base text-posh-text-primary placeholder:text-posh-text-muted/60 transition-all min-h-[48px] bg-[#06140F]/90 focus:bg-[#091D16] ${
                     fieldErrors.area 
-                      ? 'border-rose-400 bg-rose-50/20' 
-                      : 'border-brand-divider bg-brand-ivory-light/50 focus:bg-white focus:border-brand-gold'
+                      ? 'border-rose-500 bg-rose-950/20' 
+                      : 'border-[#1F4738] focus:border-posh-gold focus:ring-1 focus:ring-posh-gold'
                   }`}
                 />
                 {fieldErrors.area && (
-                  <p className="mt-1.5 text-xs text-rose-600 font-medium">{fieldErrors.area}</p>
+                  <p className="mt-1.5 text-xs text-rose-400 font-medium">{fieldErrors.area}</p>
                 )}
               </div>
 
               {/* 5. Email (Optional) */}
               <div>
-                <label htmlFor="email" className="block text-xs sm:text-sm font-medium text-brand-forest mb-1.5">
-                  ইমেইল <span className="text-[11px] sm:text-xs text-brand-secondary/70 font-normal">(ঐচ্ছিক)</span>
+                <label htmlFor="email" className="block text-xs sm:text-sm font-medium text-posh-sand mb-1.5">
+                  ইমেইল <span className="text-[11px] sm:text-xs text-posh-text-muted font-normal">(ঐচ্ছিক)</span>
                 </label>
                 <input
                   ref={emailRef}
@@ -379,21 +383,21 @@ export const RegistrationForm: React.FC = () => {
                     setFormData({ ...formData, email: e.target.value });
                     if (fieldErrors.email) setFieldErrors({ ...fieldErrors, email: '' });
                   }}
-                  className={`w-full px-3.5 sm:px-4 py-3 sm:py-3.5 rounded-lg border text-base text-brand-text placeholder:text-brand-secondary/50 transition-all min-h-[46px] ${
+                  className={`w-full px-4 py-3.5 rounded-xl border text-base text-posh-text-primary placeholder:text-posh-text-muted/60 transition-all min-h-[48px] bg-[#06140F]/90 focus:bg-[#091D16] ${
                     fieldErrors.email 
-                      ? 'border-rose-400 bg-rose-50/20' 
-                      : 'border-brand-divider bg-brand-ivory-light/50 focus:bg-white focus:border-brand-gold'
+                      ? 'border-rose-500 bg-rose-950/20' 
+                      : 'border-[#1F4738] focus:border-posh-gold focus:ring-1 focus:ring-posh-gold'
                   }`}
                 />
                 {fieldErrors.email && (
-                  <p className="mt-1.5 text-xs text-rose-600 font-medium">{fieldErrors.email}</p>
+                  <p className="mt-1.5 text-xs text-rose-400 font-medium">{fieldErrors.email}</p>
                 )}
               </div>
 
               {/* 6. Interest textarea (Optional) */}
               <div>
-                <label htmlFor="interest" className="block text-xs sm:text-sm font-medium text-brand-forest mb-1.5">
-                  কোন বিষয়টি জানতে বেশি আগ্রহী? <span className="text-[11px] sm:text-xs text-brand-secondary/70 font-normal">(ঐচ্ছিক)</span>
+                <label htmlFor="interest" className="block text-xs sm:text-sm font-medium text-posh-sand mb-1.5">
+                  কোন বিষয়টি জানতে বেশি আগ্রহী? <span className="text-[11px] sm:text-xs text-posh-text-muted font-normal">(ঐচ্ছিক)</span>
                 </label>
                 <textarea
                   id="interest"
@@ -402,14 +406,14 @@ export const RegistrationForm: React.FC = () => {
                   placeholder="আপনার কোনো নির্দিষ্ট প্রশ্ন বা জানার বিষয় থাকলে এখানে লিখতে পারেন..."
                   value={formData.interest}
                   onChange={(e) => setFormData({ ...formData, interest: e.target.value })}
-                  className="w-full px-3.5 sm:px-4 py-3 sm:py-3.5 rounded-lg border border-brand-divider bg-brand-ivory-light/50 focus:bg-white text-base text-brand-text placeholder:text-brand-secondary/50 focus:border-brand-gold transition-all"
+                  className="w-full px-4 py-3.5 rounded-xl border border-[#1F4738] bg-[#06140F]/90 focus:bg-[#091D16] text-base text-posh-text-primary placeholder:text-posh-text-muted/60 focus:border-posh-gold focus:ring-1 focus:ring-posh-gold transition-all"
                 />
-                <span className="text-[11px] sm:text-[12px] text-brand-secondary/70 block text-right mt-1">
+                <span className="text-[11px] sm:text-[12px] text-posh-text-muted block text-right mt-1">
                   {formData.interest.length}/৮০০ অক্ষর
                 </span>
               </div>
 
-              {/* 7. Explicit Consent Checkbox (Touch target friendly) */}
+              {/* 7. Explicit Consent Checkbox */}
               <div className="pt-1">
                 <label className="flex items-start gap-3 cursor-pointer select-none min-h-[44px]">
                   <input
@@ -420,27 +424,27 @@ export const RegistrationForm: React.FC = () => {
                       setFormData({ ...formData, consent: e.target.checked });
                       if (fieldErrors.consent) setFieldErrors({ ...fieldErrors, consent: '' });
                     }}
-                    className="mt-1 w-5 h-5 rounded border-brand-divider text-brand-forest focus:ring-brand-gold cursor-pointer flex-shrink-0"
+                    className="mt-1 w-5 h-5 rounded border-[#1F4738] bg-[#06140F] text-posh-gold focus:ring-posh-gold cursor-pointer flex-shrink-0"
                   />
-                  <span className="text-xs sm:text-[13px] text-brand-text/90 leading-relaxed">
-                    এই আয়োজনের বিস্তারিত জানাতে আমার সঙ্গে যোগাযোগ করা যাবে। এটি প্রাথমিক আগ্রহ নিবন্ধন এবং এতে আসন নিশ্চিত হচ্ছে না—তা বুঝেছি। <span className="text-rose-600 font-bold">*</span>
+                  <span className="text-xs sm:text-[13px] text-posh-text-secondary leading-relaxed">
+                    এই আয়োজনের বিস্তারিত জানাতে আমার সঙ্গে যোগাযোগ করা যাবে। এটি প্রাথমিক আগ্রহ নিবন্ধন এবং এতে আসন নিশ্চিত হচ্ছে না—তা বুঝেছি। <span className="text-posh-gold font-bold">*</span>
                   </span>
                 </label>
                 {fieldErrors.consent && (
-                  <p className="mt-1 text-xs text-rose-600 font-medium pl-8">{fieldErrors.consent}</p>
+                  <p className="mt-1 text-xs text-rose-400 font-medium pl-8">{fieldErrors.consent}</p>
                 )}
               </div>
 
               {/* Privacy Note */}
-              <div className="p-3 sm:p-4 bg-brand-ivory-light/60 rounded-xl text-[11px] sm:text-xs text-brand-secondary/90 flex items-start gap-2 sm:gap-2.5 border border-brand-divider/50">
-                <Lock className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-brand-secondary/70 flex-shrink-0 mt-0.5" />
+              <div className="p-3.5 sm:p-4 bg-white/[0.03] rounded-xl text-[11px] sm:text-xs text-posh-text-muted flex items-start gap-2.5 border border-[#1F4738]/50">
+                <Lock className="w-4 h-4 text-posh-gold flex-shrink-0 mt-0.5" />
                 <p className="leading-relaxed">
                   আপনার দেওয়া তথ্য শুধু এই আয়োজনের যোগাযোগ ও প্রস্তুতির কাজে ব্যবহার করা হবে। নিবন্ধনের তথ্য প্রকাশ্যে দেখানো হবে না।
                 </p>
               </div>
 
               {/* Pre-submit Note */}
-              <div className="text-center text-xs sm:text-sm font-semibold text-brand-forest px-2">
+              <div className="text-center text-xs sm:text-sm font-semibold text-posh-gold px-2">
                 এখন কোনো অর্থ দিতে হবে না। এটি আসন নিশ্চিতকরণ নয়।
               </div>
 
@@ -448,21 +452,21 @@ export const RegistrationForm: React.FC = () => {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className={`w-full py-3.5 sm:py-4 px-6 rounded-xl font-bold text-base sm:text-lg flex items-center justify-center gap-2 sm:gap-2.5 transition-all duration-200 active:translate-y-[1px] shadow-sm hover:shadow min-h-[48px] ${
+                className={`w-full py-4 px-6 rounded-xl font-bold text-base sm:text-lg flex items-center justify-center gap-2.5 transition-all duration-300 shadow-button-gold min-h-[52px] ${
                   isSubmitting
-                    ? 'bg-brand-forest/70 text-brand-ivory cursor-wait'
-                    : 'bg-brand-forest hover:bg-brand-forest-soft text-brand-ivory'
+                    ? 'bg-posh-gold/60 text-[#081712] cursor-wait'
+                    : 'bg-gradient-to-r from-[#C9A66B] via-[#E2C899] to-[#9A773F] text-[#081712] hover:brightness-110 active:translate-y-[1px]'
                 }`}
               >
                 {isSubmitting ? (
                   <>
-                    <span className="w-4 h-4 border-2 border-brand-ivory border-t-transparent rounded-full animate-spin"></span>
+                    <span className="w-4 h-4 border-2 border-[#081712] border-t-transparent rounded-full animate-spin"></span>
                     <span>তথ্য পাঠানো হচ্ছে…</span>
                   </>
                 ) : (
                   <>
                     <span>আগ্রহ নিবন্ধন করুন</span>
-                    <ArrowRight className="w-4 h-4 text-brand-gold flex-shrink-0" />
+                    <ArrowRight className="w-4 h-4 text-[#081712] flex-shrink-0" />
                   </>
                 )}
               </button>

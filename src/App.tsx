@@ -17,6 +17,7 @@ export function App() {
   const [isAdminView, setIsAdminView] = useState(false);
 
   useEffect(() => {
+    // Check initial path or hash
     const checkRoute = () => {
       const isPathAdmin = window.location.pathname.startsWith('/admin');
       const isHashAdmin = window.location.hash === '#admin';
@@ -47,8 +48,8 @@ export function App() {
     return (
       <Suspense
         fallback={
-          <div className="min-h-screen bg-brand-ivory flex items-center justify-center">
-            <div className="w-8 h-8 border-2 border-brand-forest border-t-transparent rounded-full animate-spin"></div>
+          <div className="min-h-screen bg-[#081712] flex items-center justify-center">
+            <div className="w-8 h-8 border-2 border-posh-gold border-t-transparent rounded-full animate-spin"></div>
           </div>
         }
       >
@@ -58,7 +59,7 @@ export function App() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-brand-ivory text-brand-text">
+    <div className="min-h-screen flex flex-col bg-[#081712] text-posh-text-primary selection:bg-posh-gold/30 selection:text-posh-sand relative">
       {/* Header */}
       <Header onAdminClick={navigateToAdmin} />
 
