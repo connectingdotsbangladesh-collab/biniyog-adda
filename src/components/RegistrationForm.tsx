@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { eventConfig } from '../config/event';
 import { normalizePhoneNumber, isValidBdMobile } from '../utils/phone';
-import { submitRegistration, isBackendConfigured } from '../lib/supabase';
+import { submitRegistration } from '../lib/supabase';
 import { CheckCircle2, AlertCircle, ArrowRight, Lock, Info } from 'lucide-react';
 
 export const RegistrationForm: React.FC = () => {
@@ -28,8 +28,6 @@ export const RegistrationForm: React.FC = () => {
   const emailRef = useRef<HTMLInputElement>(null);
   const consentRef = useRef<HTMLInputElement>(null);
   const statusHeadingRef = useRef<HTMLHeadingElement>(null);
-
-  const backendReady = isBackendConfigured();
 
   // If registration is closed via configuration
   if (!eventConfig.registrationOpen) {
@@ -118,12 +116,6 @@ export const RegistrationForm: React.FC = () => {
       return;
     }
 
-    if (!backendReady) {
-      setSubmitStatus('error');
-      setGeneralErrorMessage('ডাটাবেজ সংযোগ এখনো সক্রিয় করা হয়নি। অনুগ্রহ করে আয়োজকের সাথে যোগাযোগ করুন।');
-      return;
-    }
-
     setIsSubmitting(true);
     setGeneralErrorMessage('');
     setSubmitStatus('idle');
@@ -179,19 +171,6 @@ export const RegistrationForm: React.FC = () => {
               নিচের ফর্মে আপনার তথ্য দিন। আয়োজনের বিস্তারিত চূড়ান্ত হলে আপনার সঙ্গে যোগাযোগ করা হবে।
             </p>
           </div>
-
-          {/* Backend Status Notice if not configured */}
-          {!backendReady && (
-            <div className="mb-6 sm:mb-8 p-4 rounded-xl bg-[#143026]/90 border border-[#C9A66B]/35 text-[#F5E5C9] text-xs sm:text-sm flex items-start gap-3">
-              <AlertCircle className="w-5 h-5 text-[#C9A66B] flex-shrink-0 mt-0.5" />
-              <div>
-                <p className="font-semibold text-white">ডাটাবেজ সংযোগ অপেক্ষমান</p>
-                <p className="text-[#D1E2D9] text-xs sm:text-[13px] mt-1 leading-relaxed">
-                  সিস্টেমের সততা বজায় রাখতে কোনো কৃত্রিম বার্তা দেখানো হচ্ছে না। `.env` ফাইলে Supabase ক্রেডেনশিয়াল যুক্ত করামাত্র আগ্রহ সরাসরি আপনার ডাটাবেজে জমা হবে।
-                </p>
-              </div>
-            </div>
-          )}
 
           {/* Success State */}
           {submitStatus === 'success' ? (
