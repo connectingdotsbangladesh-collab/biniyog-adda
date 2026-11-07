@@ -1,0 +1,75 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    font-size: 16px;
+    background-color: #F6F2E9;
+  }
+  
+  body {
+    line-height: 1.8;
+    color: #243C34;
+    background-color: #F6F2E9;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+
+  /* Prevent Bengali conjuncts, hasant and vowel matras from clipping */
+  h1, h2, h3, h4, h5, h6 {
+    line-height: 1.35;
+    letter-spacing: -0.01em;
+  }
+
+  p, span, a, button, input, textarea, select {
+    line-height: 1.75;
+  }
+
+  /* Custom subtle scrollbar */
+  ::-webkit-scrollbar {
+    width: 7px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #F6F2E9;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #D8DED2;
+    border-radius: 9999px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #B99554;
+  }
+
+  /* Accessible focus states with refined gold ring */
+  :focus-visible {
+    outline: 2px solid #B99554;
+    outline-offset: 3px;
+  }
+}
+
+/* Bespoke print/editorial decorative elements */
+.paper-texture {
+  background-image: radial-gradient(rgba(23, 62, 53, 0.04) 1px, transparent 0);
+  background-size: 24px 24px;
+}
+
+.ticket-notch-left {
+  position: relative;
+}
+.ticket-notch-left::before {
+  content: '';
+  position: absolute;
+  left: -12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background-color: #F6F2E9;
+}
+
+.editorial-rule {
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, #D8DED2 15%, #D8DED2 85%, transparent 100%);
+}

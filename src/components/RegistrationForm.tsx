@@ -1,0 +1,478 @@
+import React, { useState, useRef } from 'react';
+import { eventConfig } from '../config/event';
+import { normalizePhoneNumber, isValidBdMobile } from '../utils/phone';
+import { submitRegistration, isBackendConfigured } from '../lib/supabase';
+import { CheckCircle2, AlertCircle, ArrowRight, Lock, Info } from 'lucide-react';
+
+export const RegistrationForm: React.FC = () => {
+  const [formData, setFormData] = useState({
+    name: '',
+    phone: '',
+    occupation: 'চাকরিজীবী',
+    area: '',
+    email: '',
+    interest: '',
+    consent: false,
+    honeypot: '',
+  });
+
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
+  const [generalErrorMessage, setGeneralErrorMessage] = useState('');
+
+  // Refs for focusing first invalid input
+  const nameRef = useRef<HTMLInputElement>(null);
+  const phoneRef = useRef<HTMLInputElement>(null);
+  const areaRef = useRef<HTMLInputElement>(null);
+  const emailRef = useRef<HTMLInputElement>(null);
+  const consentRef = useRef<HTMLInputElement>(null);
+  const statusHeadingRef = useRef<HTMLHeadingElement>(null);
+
+  const backendReady = isBackendConfigured();
+
+  // If registration is closed via configuration
+  if (!eventConfig.registrationOpen) {
+    return (
+      <section id="registration" className="py-12 sm:py-24 bg-brand-ivory border-b border-brand-divider/70">
+        <div className="max-w-xl mx-auto px-4 text-center">
+          <div className="bg-brand-surface rounded-xl p-6 sm:p-10 border border-brand-divider/70 shadow-sm">
+            <Info className="w-10 h-10 sm:w-12 sm:h-12 text-brand-gold mx-auto mb-3 sm:mb-4" />
+            <h2 className="text-xl sm:text-3xl font-serif-bn font-bold text-brand-forest mb-2 sm:mb-3">
+              অংশ নিতে আগ্রহী?
+            </h2>
+            <p className="text-sm sm:text-base text-brand-secondary">
+              প্রাথমিক নিবন্ধন আপাতত বন্ধ রয়েছে। পরবর্তী ঘোষণার জন্য অপেক্ষা করুন।
+            </p>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  const validate = () => {
+    const errors: Record<string, string> = {};
+
+    // 1. Name
+    const cleanName = formData.name.trim();
+    if (!cleanName || cleanName.length < 2) {
+      errors.name = 'আপনার সঠিক নাম লিখুন (কমপক্ষে ২ অক্ষর)।';
+    } else if (cleanName.length > 100) {
+      errors.name = 'নাম সর্বোচ্চ ১০০ অক্ষরের মধ্যে লিখুন।';
+    }
+
+    // 2. Phone
+    if (!formData.phone.trim()) {
+      errors.phone = 'মোবাইল / WhatsApp নম্বর দেওয়া আবশ্যক।';
+    } else if (!isValidBdMobile(formData.phone)) {
+      errors.phone = 'সঠিক বাংলাদেশি মোবাইল নম্বর লিখুন।';
+    }
+
+    // 3. Occupation
+    if (!formData.occupation) {
+      errors.occupation = 'আপনার পেশা নির্বাচন করুন।';
+    }
+
+    // 4. Area
+    const cleanArea = formData.area.trim();
+    if (!cleanArea) {
+      errors.area = 'আপনার এলাকা বা জেলা উল্লেখ করুন।';
+    } else if (cleanArea.length > 120) {
+      errors.area = 'এলাকা বা জেলা সর্বোচ্চ ১২০ অক্ষরের মধ্যে লিখুন।';
+    }
+
+    // 5. Email (Optional)
+    if (formData.email.trim()) {
+      const emailRegex = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
+      if (!emailRegex.test(formData.email.trim())) {
+        errors.email = 'সঠিক ইমেইল ঠিকানা দিন অথবা ফাঁকা রাখুন।';
+      }
+    }
+
+    // 6. Interest length
+    if (formData.interest.length > 800) {
+      errors.interest = 'সর্বোচ্চ ৮০০ অক্ষরের মধ্যে লিখুন।';
+    }
+
+    // 7. Consent
+    if (!formData.consent) {
+      errors.consent = 'সম্মতি চেকবক্সে টিক চিহ্ন দেওয়া আবশ্যক।';
+    }
+
+    setFieldErrors(errors);
+
+    // Focus the first invalid element
+    if (errors.name && nameRef.current) nameRef.current.focus();
+    else if (errors.phone && phoneRef.current) phoneRef.current.focus();
+    else if (errors.area && areaRef.current) areaRef.current.focus();
+    else if (errors.email && emailRef.current) emailRef.current.focus();
+    else if (errors.consent && consentRef.current) consentRef.current.focus();
+
+    return Object.keys(errors).length === 0;
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!validate()) {
+      return;
+    }
+
+    if (!backendReady) {
+      setSubmitStatus('error');
+      setGeneralErrorMessage('ডাটাবেজ সংযোগ এখনো সক্রিয় করা হয়নি। অনুগ্রহ করে আয়োজকের সাথে যোগাযোগ করুন।');
+      return;
+    }
+
+    setIsSubmitting(true);
+    setGeneralErrorMessage('');
+    setSubmitStatus('idle');
+
+    const canonicalPhone = normalizePhoneNumber(formData.phone);
+
+    const result = await submitRegistration({
+      eventId: 'biniyog-adda-2026-11-14',
+      name: formData.name,
+      phoneNormalized: canonicalPhone,
+      occupation: formData.occupation,
+      area: formData.area,
+      email: formData.email,
+      interest: formData.interest,
+      consentGiven: formData.consent,
+      honeypot: formData.honeypot,
+      source: 'direct',
+    });
+
+    setIsSubmitting(false);
+
+    if (result.success) {
+      setSubmitStatus('success');
+      setTimeout(() => {
+        statusHeadingRef.current?.scrollIntoView({ behavior: 'smooth' });
+      }, 50);
+    } else {
+      setSubmitStatus('error');
+      setGeneralErrorMessage(result.error || 'তথ্য জমা হয়নি। আপনার লেখা তথ্য রেখে দেওয়া হয়েছে। অনুগ্রহ করে আবার চেষ্টা করুন।');
+    }
+  };
+
+  return (
+    <section id="registration" className="py-12 sm:py-24 bg-brand-ivory border-b border-brand-divider/70 paper-texture scroll-mt-20">
+      <div className="max-w-[760px] mx-auto px-3.5 sm:px-8">
+        
+        {/* Form Container (Bespoke Salon RSVP Card) */}
+        <div className="bg-brand-surface rounded-xl sm:rounded-2xl p-5 sm:p-12 border border-brand-divider shadow-[0_8px_32px_-12px_rgba(23,62,53,0.08)] relative">
+          
+          {/* Header */}
+          <div className="text-center mb-7 sm:mb-10 pb-6 sm:pb-8 border-b border-brand-divider/70">
+            <span className="text-[11px] sm:text-xs uppercase tracking-widest font-semibold text-brand-gold-deep mb-1.5 sm:mb-2 inline-block">
+              প্রাথমিক আগ্রহ নিবন্ধন
+            </span>
+            <h2 className="text-2xl sm:text-4xl font-serif-bn font-bold text-brand-forest mt-0.5 mb-2 sm:mb-3">
+              অংশ নিতে আগ্রহী?
+            </h2>
+            <p className="text-sm sm:text-base text-brand-secondary/90 max-w-lg mx-auto leading-relaxed">
+              নিচের ফর্মে আপনার তথ্য দিন। আয়োজনের বিস্তারিত চূড়ান্ত হলে আপনার সঙ্গে যোগাযোগ করা হবে।
+            </p>
+          </div>
+
+          {/* Backend Status Notice if not configured */}
+          {!backendReady && (
+            <div className="mb-6 sm:mb-8 p-3.5 sm:p-4 rounded-xl bg-amber-50/80 border border-amber-200/90 text-amber-950 text-xs sm:text-sm flex items-start gap-2.5 sm:gap-3">
+              <AlertCircle className="w-4 h-4 sm:w-5 sm:h-5 text-amber-700 flex-shrink-0 mt-0.5" />
+              <div>
+                <p className="font-semibold text-amber-900">ডাটাবেজ সংযোগ অপেক্ষমান</p>
+                <p className="text-amber-800 text-[11px] sm:text-xs mt-1 leading-relaxed">
+                  সিস্টেমের সততা বজায় রাখতে কোনো কৃত্রিম বার্তা দেখানো হচ্ছে না। `.env` ফাইলে Supabase ক্রেডেনশিয়াল যুক্ত করামাত্র আগ্রহ সরাসরি আপনার ডাটাবেজে জমা হবে।
+                </p>
+              </div>
+            </div>
+          )}
+
+          {/* Success State */}
+          {submitStatus === 'success' ? (
+            <div className="text-center py-8 sm:py-10 px-2 sm:px-4 space-y-3 sm:space-y-4">
+              <div className="w-14 h-14 sm:w-16 sm:h-16 bg-brand-forest text-brand-gold rounded-full flex items-center justify-center mx-auto shadow-md">
+                <CheckCircle2 className="w-7 h-7 sm:w-8 sm:h-8" />
+              </div>
+              <h3 ref={statusHeadingRef} tabIndex={-1} className="text-xl sm:text-3xl font-serif-bn font-bold text-brand-forest">
+                আপনার আগ্রহ নিবন্ধিত হয়েছে।
+              </h3>
+              <p className="text-sm sm:text-base text-brand-text/90 leading-relaxed max-w-md mx-auto">
+                আয়োজনের বিস্তারিত চূড়ান্ত হলে যোগাযোগ করা হবে। এটি আসন নিশ্চিতকরণ নয়।
+              </p>
+              <div className="pt-4 sm:pt-6">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSubmitStatus('idle');
+                    setFormData({
+                      name: '',
+                      phone: '',
+                      occupation: 'চাকরিজীবী',
+                      area: '',
+                      email: '',
+                      interest: '',
+                      consent: false,
+                      honeypot: '',
+                    });
+                  }}
+                  className="text-xs sm:text-sm font-medium text-brand-forest hover:text-brand-gold-deep underline underline-offset-4 min-h-[44px] inline-flex items-center"
+                >
+                  প্রয়োজনে আরেকটি তথ্য জমা দিন
+                </button>
+              </div>
+            </div>
+          ) : (
+            <form onSubmit={handleSubmit} noValidate className="space-y-5 sm:space-y-6">
+              
+              {/* Overall Failure Alert */}
+              {submitStatus === 'error' && (
+                <div role="alert" className="p-3.5 sm:p-4 rounded-xl bg-rose-50 border border-rose-200 text-rose-900 text-xs sm:text-sm flex items-start gap-2.5 sm:gap-3">
+                  <AlertCircle className="w-4 h-4 sm:w-5 sm:h-5 text-rose-600 flex-shrink-0 mt-0.5" />
+                  <div>
+                    <p className="font-semibold">ত্রুটি</p>
+                    <p className="mt-0.5 text-[11px] sm:text-xs">
+                      {generalErrorMessage || 'তথ্য জমা হয়নি। আপনার লেখা তথ্য রেখে দেওয়া হয়েছে। অনুগ্রহ করে আবার চেষ্টা করুন।'}
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              {/* Honeypot field (hidden from screen reader & visuals) */}
+              <div className="hidden" aria-hidden="true">
+                <label htmlFor="website_url">Website URL (leave blank)</label>
+                <input
+                  id="website_url"
+                  type="text"
+                  tabIndex={-1}
+                  autoComplete="off"
+                  value={formData.honeypot}
+                  onChange={(e) => setFormData({ ...formData, honeypot: e.target.value })}
+                />
+              </div>
+
+              {/* 1. Name (16px base font size prevents iOS zoom) */}
+              <div>
+                <label htmlFor="name" className="block text-xs sm:text-sm font-medium text-brand-forest mb-1.5">
+                  আপনার নাম <span className="text-rose-600 font-bold" aria-label="আবশ্যক">*</span>
+                </label>
+                <input
+                  ref={nameRef}
+                  id="name"
+                  type="text"
+                  required
+                  autoComplete="name"
+                  placeholder="যেমন: মোঃ কামরুল হাসান"
+                  value={formData.name}
+                  onChange={(e) => {
+                    setFormData({ ...formData, name: e.target.value });
+                    if (fieldErrors.name) setFieldErrors({ ...fieldErrors, name: '' });
+                  }}
+                  className={`w-full px-3.5 sm:px-4 py-3 sm:py-3.5 rounded-lg border text-base text-brand-text placeholder:text-brand-secondary/50 transition-all min-h-[46px] ${
+                    fieldErrors.name 
+                      ? 'border-rose-400 bg-rose-50/20' 
+                      : 'border-brand-divider bg-brand-ivory-light/50 focus:bg-white focus:border-brand-gold'
+                  }`}
+                />
+                {fieldErrors.name && (
+                  <p className="mt-1.5 text-xs text-rose-600 font-medium">{fieldErrors.name}</p>
+                )}
+              </div>
+
+              {/* 2. Phone */}
+              <div>
+                <label htmlFor="phone" className="block text-xs sm:text-sm font-medium text-brand-forest mb-1.5">
+                  মোবাইল / WhatsApp নম্বর <span className="text-rose-600 font-bold" aria-label="আবশ্যক">*</span>
+                </label>
+                <input
+                  ref={phoneRef}
+                  id="phone"
+                  type="tel"
+                  required
+                  autoComplete="tel"
+                  inputMode="tel"
+                  placeholder="01XXXXXXXXX"
+                  value={formData.phone}
+                  onChange={(e) => {
+                    setFormData({ ...formData, phone: e.target.value });
+                    if (fieldErrors.phone) setFieldErrors({ ...fieldErrors, phone: '' });
+                  }}
+                  className={`w-full px-3.5 sm:px-4 py-3 sm:py-3.5 rounded-lg border text-base text-brand-text placeholder:text-brand-secondary/50 transition-all min-h-[46px] ${
+                    fieldErrors.phone 
+                      ? 'border-rose-400 bg-rose-50/20' 
+                      : 'border-brand-divider bg-brand-ivory-light/50 focus:bg-white focus:border-brand-gold'
+                  }`}
+                />
+                <span className="text-[11px] sm:text-[12px] text-brand-secondary/80 block mt-1">
+                  বাংলা বা ইংরেজি উভয় সংখ্যা গ্রহণযোগ্য (যেমন: 01712345678 বা ০১৭১২৩৪৫৬৭৮)
+                </span>
+                {fieldErrors.phone && (
+                  <p className="mt-1.5 text-xs text-rose-600 font-medium">{fieldErrors.phone}</p>
+                )}
+              </div>
+
+              {/* 3. Occupation */}
+              <div>
+                <label htmlFor="occupation" className="block text-xs sm:text-sm font-medium text-brand-forest mb-1.5">
+                  আপনার পেশা <span className="text-rose-600 font-bold" aria-label="আবশ্যক">*</span>
+                </label>
+                <select
+                  id="occupation"
+                  required
+                  value={formData.occupation}
+                  onChange={(e) => setFormData({ ...formData, occupation: e.target.value })}
+                  className="w-full px-3.5 sm:px-4 py-3 sm:py-3.5 rounded-lg border border-brand-divider bg-brand-ivory-light/50 focus:bg-white text-base text-brand-text focus:border-brand-gold transition-all min-h-[46px]"
+                >
+                  <option value="চাকরিজীবী">চাকরিজীবী</option>
+                  <option value="ব্যবসায়ী বা উদ্যোক্তা">ব্যবসায়ী বা উদ্যোক্তা</option>
+                  <option value="ফ্রিল্যান্সার">ফ্রিল্যান্সার</option>
+                  <option value="শিক্ষার্থী">শিক্ষার্থী</option>
+                  <option value="অন্যান্য">অন্যান্য</option>
+                </select>
+                {fieldErrors.occupation && (
+                  <p className="mt-1.5 text-xs text-rose-600 font-medium">{fieldErrors.occupation}</p>
+                )}
+              </div>
+
+              {/* 4. Area / District */}
+              <div>
+                <label htmlFor="area" className="block text-xs sm:text-sm font-medium text-brand-forest mb-1.5">
+                  এলাকা / জেলা <span className="text-rose-600 font-bold" aria-label="আবশ্যক">*</span>
+                </label>
+                <input
+                  ref={areaRef}
+                  id="area"
+                  type="text"
+                  required
+                  placeholder="যেমন: ধানমন্ডি, ঢাকা"
+                  value={formData.area}
+                  onChange={(e) => {
+                    setFormData({ ...formData, area: e.target.value });
+                    if (fieldErrors.area) setFieldErrors({ ...fieldErrors, area: '' });
+                  }}
+                  className={`w-full px-3.5 sm:px-4 py-3 sm:py-3.5 rounded-lg border text-base text-brand-text placeholder:text-brand-secondary/50 transition-all min-h-[46px] ${
+                    fieldErrors.area 
+                      ? 'border-rose-400 bg-rose-50/20' 
+                      : 'border-brand-divider bg-brand-ivory-light/50 focus:bg-white focus:border-brand-gold'
+                  }`}
+                />
+                {fieldErrors.area && (
+                  <p className="mt-1.5 text-xs text-rose-600 font-medium">{fieldErrors.area}</p>
+                )}
+              </div>
+
+              {/* 5. Email (Optional) */}
+              <div>
+                <label htmlFor="email" className="block text-xs sm:text-sm font-medium text-brand-forest mb-1.5">
+                  ইমেইল <span className="text-[11px] sm:text-xs text-brand-secondary/70 font-normal">(ঐচ্ছিক)</span>
+                </label>
+                <input
+                  ref={emailRef}
+                  id="email"
+                  type="email"
+                  autoComplete="email"
+                  inputMode="email"
+                  placeholder="name@example.com"
+                  value={formData.email}
+                  onChange={(e) => {
+                    setFormData({ ...formData, email: e.target.value });
+                    if (fieldErrors.email) setFieldErrors({ ...fieldErrors, email: '' });
+                  }}
+                  className={`w-full px-3.5 sm:px-4 py-3 sm:py-3.5 rounded-lg border text-base text-brand-text placeholder:text-brand-secondary/50 transition-all min-h-[46px] ${
+                    fieldErrors.email 
+                      ? 'border-rose-400 bg-rose-50/20' 
+                      : 'border-brand-divider bg-brand-ivory-light/50 focus:bg-white focus:border-brand-gold'
+                  }`}
+                />
+                {fieldErrors.email && (
+                  <p className="mt-1.5 text-xs text-rose-600 font-medium">{fieldErrors.email}</p>
+                )}
+              </div>
+
+              {/* 6. Interest textarea (Optional) */}
+              <div>
+                <label htmlFor="interest" className="block text-xs sm:text-sm font-medium text-brand-forest mb-1.5">
+                  কোন বিষয়টি জানতে বেশি আগ্রহী? <span className="text-[11px] sm:text-xs text-brand-secondary/70 font-normal">(ঐচ্ছিক)</span>
+                </label>
+                <textarea
+                  id="interest"
+                  rows={3}
+                  maxLength={800}
+                  placeholder="আপনার কোনো নির্দিষ্ট প্রশ্ন বা জানার বিষয় থাকলে এখানে লিখতে পারেন..."
+                  value={formData.interest}
+                  onChange={(e) => setFormData({ ...formData, interest: e.target.value })}
+                  className="w-full px-3.5 sm:px-4 py-3 sm:py-3.5 rounded-lg border border-brand-divider bg-brand-ivory-light/50 focus:bg-white text-base text-brand-text placeholder:text-brand-secondary/50 focus:border-brand-gold transition-all"
+                />
+                <span className="text-[11px] sm:text-[12px] text-brand-secondary/70 block text-right mt-1">
+                  {formData.interest.length}/৮০০ অক্ষর
+                </span>
+              </div>
+
+              {/* 7. Explicit Consent Checkbox (Touch target friendly) */}
+              <div className="pt-1">
+                <label className="flex items-start gap-3 cursor-pointer select-none min-h-[44px]">
+                  <input
+                    ref={consentRef}
+                    type="checkbox"
+                    checked={formData.consent}
+                    onChange={(e) => {
+                      setFormData({ ...formData, consent: e.target.checked });
+                      if (fieldErrors.consent) setFieldErrors({ ...fieldErrors, consent: '' });
+                    }}
+                    className="mt-1 w-5 h-5 rounded border-brand-divider text-brand-forest focus:ring-brand-gold cursor-pointer flex-shrink-0"
+                  />
+                  <span className="text-xs sm:text-[13px] text-brand-text/90 leading-relaxed">
+                    এই আয়োজনের বিস্তারিত জানাতে আমার সঙ্গে যোগাযোগ করা যাবে। এটি প্রাথমিক আগ্রহ নিবন্ধন এবং এতে আসন নিশ্চিত হচ্ছে না—তা বুঝেছি। <span className="text-rose-600 font-bold">*</span>
+                  </span>
+                </label>
+                {fieldErrors.consent && (
+                  <p className="mt-1 text-xs text-rose-600 font-medium pl-8">{fieldErrors.consent}</p>
+                )}
+              </div>
+
+              {/* Privacy Note */}
+              <div className="p-3 sm:p-4 bg-brand-ivory-light/60 rounded-xl text-[11px] sm:text-xs text-brand-secondary/90 flex items-start gap-2 sm:gap-2.5 border border-brand-divider/50">
+                <Lock className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-brand-secondary/70 flex-shrink-0 mt-0.5" />
+                <p className="leading-relaxed">
+                  আপনার দেওয়া তথ্য শুধু এই আয়োজনের যোগাযোগ ও প্রস্তুতির কাজে ব্যবহার করা হবে। নিবন্ধনের তথ্য প্রকাশ্যে দেখানো হবে না।
+                </p>
+              </div>
+
+              {/* Pre-submit Note */}
+              <div className="text-center text-xs sm:text-sm font-semibold text-brand-forest px-2">
+                এখন কোনো অর্থ দিতে হবে না। এটি আসন নিশ্চিতকরণ নয়।
+              </div>
+
+              {/* Submit Button */}
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className={`w-full py-3.5 sm:py-4 px-6 rounded-xl font-bold text-base sm:text-lg flex items-center justify-center gap-2 sm:gap-2.5 transition-all duration-200 active:translate-y-[1px] shadow-sm hover:shadow min-h-[48px] ${
+                  isSubmitting
+                    ? 'bg-brand-forest/70 text-brand-ivory cursor-wait'
+                    : 'bg-brand-forest hover:bg-brand-forest-soft text-brand-ivory'
+                }`}
+              >
+                {isSubmitting ? (
+                  <>
+                    <span className="w-4 h-4 border-2 border-brand-ivory border-t-transparent rounded-full animate-spin"></span>
+                    <span>তথ্য পাঠানো হচ্ছে…</span>
+                  </>
+                ) : (
+                  <>
+                    <span>আগ্রহ নিবন্ধন করুন</span>
+                    <ArrowRight className="w-4 h-4 text-brand-gold flex-shrink-0" />
+                  </>
+                )}
+              </button>
+
+            </form>
+          )}
+
+        </div>
+
+      </div>
+    </section>
+  );
+};
