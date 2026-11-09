@@ -31,7 +31,7 @@ export const Hero: React.FC = () => {
                 আয়ের নতুন উৎস নিয়ে ভাবছেন?
               </h1>
               <h2 className="text-2xl sm:text-4xl lg:text-[46px] font-serif-bn font-bold tracking-tight leading-[1.25] text-gold-gradient">
-                শুরু হোক বিনিয়োগ আড্ডায়।
+                শুরু হোক অর্থালাপে।
               </h2>
             </div>
 

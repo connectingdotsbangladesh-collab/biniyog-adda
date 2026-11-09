@@ -25,7 +25,7 @@ export interface EventConfig {
 }
 
 export const eventConfig: EventConfig = {
-  eventName: 'বিনিয়োগ আড্ডা',
+  eventName: 'অর্থালাপ',
   speakerName: 'আরিফুল ইসলাম',
   speakerLabel: 'আলোচনায়',
   speakerBio: 'প্যাসিভ ইনকাম ও আয়ের একাধিক উৎস নিয়ে নিজের অভিজ্ঞতা তুলে ধরবেন এবং অংশগ্রহণকারীদের সঙ্গে আলোচনা করবেন।',

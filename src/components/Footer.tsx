@@ -14,16 +14,14 @@ export const Footer: React.FC<FooterProps> = ({ onAdminClick }) => {
           <div className="space-y-2 sm:space-y-3">
             <div className="flex items-center justify-center md:justify-start gap-3">
               <img
-                src="./biniyog-adda-logo.png"
-                alt="বিনিয়োগ আড্ডা"
-                className="h-8 sm:h-9 w-auto brightness-0 invert drop-shadow-[0_2px_8px_rgba(201,166,107,0.3)]"
+                src="./orthalaap-logo.png"
+                alt="অর্থালাপ"
+                className="h-9 sm:h-11 w-auto drop-shadow-[0_3px_12px_rgba(201,166,107,0.35)]"
                 onError={(e) => {
                   e.currentTarget.style.display = 'none';
                 }}
               />
-              <span className="text-xl sm:text-2xl font-serif-bn font-bold tracking-tight text-posh-sand">
-                বিনিয়োগ আড্ডা
-              </span>
+              <span className="text-xl sm:text-2xl font-serif-bn font-bold tracking-tight text-posh-sand">অর্থালাপ</span>
             </div>
             <p className="text-xs sm:text-[15px] text-posh-text-muted max-w-md font-normal">
               প্যাসিভ ইনকাম ও আয়ের একাধিক উৎস নিয়ে আলোচনা।
@@ -32,7 +30,7 @@ export const Footer: React.FC<FooterProps> = ({ onAdminClick }) => {
 
           {/* Organizer & Copyright */}
           <div className="flex flex-col items-center md:items-end gap-1.5 sm:gap-2 text-[11px] sm:text-xs text-posh-text-muted">
-            <span>© ২০২৬ বিনিয়োগ আড্ডা। সর্বস্বত্ব সংরক্ষিত।</span>
+            <span>© ২০২৬ অর্থালাপ। সর্বস্বত্ব সংরক্ষিত।</span>
             {onAdminClick && (
               <button
                 onClick={onAdminClick}

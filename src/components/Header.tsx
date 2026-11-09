@@ -14,13 +14,13 @@ export const Header: React.FC<HeaderProps> = ({ onAdminClick }) => {
         <a 
           href="#" 
           className="flex items-center gap-3 group focus-visible:outline-posh-gold min-h-[44px]"
-          aria-label="বিনিয়োগ আড্ডা হোমপেজ"
+          aria-label="অর্থালাপ হোমপেজ"
         >
           <div className="bg-white/[0.06] hover:bg-white/[0.1] px-3.5 sm:px-4 py-2 rounded-xl border border-white/[0.12] hover:border-[#C9A66B]/50 transition-all duration-300 backdrop-blur-md shadow-inner flex items-center">
             <img
-              src="./biniyog-adda-logo.png"
-              alt="বিনিয়োগ আড্ডা লোগো"
-              className="h-8 sm:h-10 w-auto object-contain brightness-0 invert drop-shadow-[0_2px_8px_rgba(201,166,107,0.35)] transition-transform duration-300 group-hover:scale-[1.02]"
+              src="./orthalaap-logo.png"
+              alt="অর্থালাপ লোগো"
+              className="h-9 sm:h-11 w-auto object-contain drop-shadow-[0_4px_16px_rgba(32,78,60,0.6)] drop-shadow-[0_2px_8px_rgba(201,166,107,0.35)] transition-transform duration-300 group-hover:scale-[1.02]"
               onError={(e) => {
                 e.currentTarget.style.display = 'none';
                 const fallback = document.getElementById('brand-text-fallback');
@@ -29,8 +29,7 @@ export const Header: React.FC<HeaderProps> = ({ onAdminClick }) => {
             />
             <div id="brand-text-fallback" className="hidden items-center gap-2 font-serif-bn font-bold text-xl sm:text-2xl text-white">
               <span className="w-2.5 h-2.5 rounded-full bg-[#C9A66B] inline-block"></span>
-              বিনিয়োগ আড্ডা
-            </div>
+              অর্থালাপ</div>
           </div>
         </a>
 

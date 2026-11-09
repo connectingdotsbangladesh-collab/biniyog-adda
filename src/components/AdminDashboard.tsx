@@ -30,7 +30,7 @@ interface AdminDashboardProps {
   onBackToSite: () => void;
 }
 
-const ORGANIZER_PASSCODE = 'biniyog2026'; // Master passcode for instant access
+const ORGANIZER_PASSCODES = ['orthalaap2026', 'biniyog2026'];
 const AUTH_STORAGE_KEY = 'biniyog_adda_admin_auth_v1';
 
 export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToSite }) => {
@@ -102,7 +102,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToSite }) 
 
   const handlePasscodeLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    if (enteredPasscode.trim() === ORGANIZER_PASSCODE) {
+    if (ORGANIZER_PASSCODES.includes(enteredPasscode.trim().toLowerCase())) {
       setIsAuthenticated(true);
       sessionStorage.setItem(AUTH_STORAGE_KEY, 'true');
       setAuthError('');
@@ -259,14 +259,14 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToSite }) 
     ]);
 
     const timestamp = new Date().toISOString().slice(0, 10);
-    exportToCsv(`biniyog_adda_applicants_${timestamp}.csv`, headers, rows);
+    exportToCsv(`orthalaap_applicants_${timestamp}.csv`, headers, rows);
   };
 
   // WhatsApp quick chat helper
   const getWhatsAppLink = (phone: string, name: string) => {
     const cleanNumber = phone.startsWith('0') ? '88' + phone : phone;
     const message = encodeURIComponent(
-      `আসসালামু আলাইকুম ${name} ভাই/আপু, বিনিয়োগ আড্ডা (১৪ নভেম্বর ২০২৬) অফলাইন কর্মশালায় আপনার প্রাথমিক আগ্রহ নিবন্ধনের জন্য ধন্যবাদ। বিস্তারিত আলোচনার জন্য যোগাযোগ করছি।`
+      `আসসালামু আলাইকুম ${name} ভাই/আপু, অর্থালাপ (১৪ নভেম্বর ২০২৬) অফলাইন কর্মশালায় আপনার প্রাথমিক আগ্রহ নিবন্ধনের জন্য ধন্যবাদ। বিস্তারিত আলোচনার জন্য যোগাযোগ করছি।`
     );
     return `https://wa.me/${cleanNumber}?text=${message}`;
   };
@@ -288,7 +288,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToSite }) 
               আয়োজক অ্যাডমিন প্যানেল
             </h1>
             <p className="text-xs sm:text-sm text-[#A9C4B7] mt-1">
-              বিনিয়োগ আড্ডা — আবেদনকারী তালিকা ও ব্যবস্থাপনা
+              অর্থালাপ — আবেদনকারী তালিকা ও ব্যবস্থাপনা
             </p>
           </div>
 
@@ -345,7 +345,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToSite }) 
                   className="w-full px-4 py-3 rounded-xl border border-[#204E3C] bg-[#05140F] text-white text-base focus:border-[#C9A66B] focus:ring-1 focus:ring-[#C9A66B] transition-all"
                 />
                 <span className="text-[11px] text-[#A9C4B7] block mt-1">
-                  ডিফল্ট পাসকোড: <code className="text-[#C9A66B] font-mono">biniyog2026</code>
+                  ডিফল্ট পাসকোড: <code className="text-[#C9A66B] font-mono">orthalaap2026</code> (অথবা <code className="text-[#C9A66B]/80 font-mono">biniyog2026</code>)
                 </span>
               </div>
 
