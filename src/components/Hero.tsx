@@ -27,10 +27,10 @@ export const Hero: React.FC = () => {
 
             {/* Main Headline & Supporting Heading with High-Contrast Gradient */}
             <div className="space-y-3 sm:space-y-4">
-              <h1 className="text-3xl sm:text-5xl lg:text-[58px] font-serif-bn font-bold tracking-tight leading-[1.2] text-white">
+              <h1 className="text-3xl sm:text-5xl lg:text-[56px] font-bengali font-bold leading-[1.3] text-white">
                 আয়ের নতুন উৎস নিয়ে ভাবছেন?
               </h1>
-              <h2 className="text-2xl sm:text-4xl lg:text-[46px] font-serif-bn font-bold tracking-tight leading-[1.25] text-gold-gradient">
+              <h2 className="text-2xl sm:text-4xl lg:text-[46px] font-bengali font-bold leading-[1.35] text-gold-gradient block py-1">
                 শুরু হোক অর্থালাপে।
               </h2>
             </div>
@@ -90,7 +90,7 @@ export const Hero: React.FC = () => {
 
               {/* Main Date Display with Luxury Gold Gradient */}
               <div className="space-y-1">
-                <div className="text-3xl sm:text-4xl font-serif-bn font-bold text-gold-gradient tracking-tight">
+                <div className="text-3xl sm:text-4xl font-bengali font-bold text-gold-gradient py-0.5">
                   {eventConfig.dateFormattedBn}
                 </div>
                 <div className="text-base text-[#D1E2D9] font-medium">
