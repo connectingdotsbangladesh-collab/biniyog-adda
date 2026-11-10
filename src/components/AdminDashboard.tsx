@@ -429,9 +429,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToSite }) 
             </button>
             <div>
               <div className="flex items-center gap-2">
-                <span className="text-base sm:text-xl font-serif-bn font-bold text-white">
-                  বিনিয়োগ আড্ডা
-                </span>
+                <span className="text-base sm:text-xl font-bengali font-bold text-white">অর্থালাপ</span>
                 <span className="text-[10px] sm:text-xs font-mono font-bold bg-[#C9A66B]/20 text-[#F5E5C9] border border-[#C9A66B]/40 px-2 py-0.5 rounded-full">
                   ADMIN PORTAL
                 </span>

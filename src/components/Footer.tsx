@@ -16,7 +16,7 @@ export const Footer: React.FC<FooterProps> = ({ onAdminClick }) => {
               <img
                 src="./orthalaap-logo.png"
                 alt="অর্থালাপ"
-                className="h-9 sm:h-11 w-auto drop-shadow-[0_3px_12px_rgba(201,166,107,0.35)]"
+                className="h-9 sm:h-11 w-auto object-contain"
                 onError={(e) => {
                   e.currentTarget.style.display = 'none';
                 }}
