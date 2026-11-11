@@ -60,7 +60,7 @@ export const eventConfig: EventConfig = {
   timezone: 'Asia/Dhaka',
   timeLabel: 'সকাল ৯:৩০টা – বিকেল ৩:০০টা',
   venueStatus: 'confirmed',
-  venueName: 'মেফিল কনভেনশন হলের বিল্ডিং',
+  venueName: 'মেহফিল কনভেনশন হলের বিল্ডিং',
   venueLandmark: 'শেওড়াপাড়া মেট্রো স্টেশনের পাশে',
   venueAddress: '965/1/A, Salam Abid Complex, Begum Rokeya, East Shewrapara, Dhaka 1216',
   mapUrl:
