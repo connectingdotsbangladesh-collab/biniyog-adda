@@ -4,8 +4,10 @@ const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || '';
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
 const envGoogleSheetsUrl = import.meta.env.VITE_GOOGLE_SHEETS_URL || '';
 
-// Optional hardcoded Google Apps Script Web App URL (set via env var or paste /exec URL here)
-const GOOGLE_SHEETS_WEB_APP_URL = envGoogleSheetsUrl;
+// Live Google Apps Script Web App URL for Orthalaap Registrations
+const DEFAULT_GOOGLE_SHEETS_URL =
+  'https://script.google.com/macros/s/AKfycbwEnZeYUYrrdRE5JKlJoAHEtU4Qmh7piQu5heuZK0wbLFI7i_i0e2v3SXU8gicOJR4P9g/exec';
+const GOOGLE_SHEETS_WEB_APP_URL = envGoogleSheetsUrl || DEFAULT_GOOGLE_SHEETS_URL;
 
 export const isGoogleSheetsConfigured = (): boolean => {
   return Boolean(
@@ -315,8 +317,20 @@ export async function submitRegistration(data: RegistrationSubmission): Promise<
           return { success: false, error: resJson.error };
         }
       }
+      if (!isBackendConfigured()) {
+        return {
+          success: false,
+          error: 'সার্ভারে তথ্য সংরক্ষণে সমস্যা হয়েছে। অনুগ্রহ করে কিছুক্ষণ পর আবার চেষ্টা করুন।',
+        };
+      }
     } catch (sheetErr) {
       console.warn('Google Sheets sync error:', sheetErr);
+      if (!isBackendConfigured()) {
+        return {
+          success: false,
+          error: 'ইন্টারনেট সংযোগের কারণে সার্ভারে তথ্য পৌঁছায়নি। অনুগ্রহ করে আবার চেষ্টা করুন।',
+        };
+      }
     }
   }
 
