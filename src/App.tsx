@@ -9,20 +9,36 @@ import { FAQ } from './components/FAQ';
 import { Footer } from './components/Footer';
 import { StickyMobileCta } from './components/StickyMobileCta';
 import { BackgroundPatterns } from './components/BackgroundPatterns';
+import { StandaloneRegistration } from './components/StandaloneRegistration';
 
 const AdminDashboard = lazy(() =>
   import('./components/AdminDashboard').then((mod) => ({ default: mod.AdminDashboard }))
 );
 
+type ViewMode = 'site' | 'admin' | 'register';
+
 export function App() {
-  const [isAdminView, setIsAdminView] = useState(false);
+  const [viewMode, setViewMode] = useState<ViewMode>('site');
 
   useEffect(() => {
-    // Check initial path or hash
     const checkRoute = () => {
-      const isPathAdmin = window.location.pathname.startsWith('/admin');
-      const isHashAdmin = window.location.hash === '#admin';
-      setIsAdminView(isPathAdmin || isHashAdmin);
+      const path = window.location.pathname.toLowerCase();
+      const hash = window.location.hash.toLowerCase();
+      const search = window.location.search.toLowerCase();
+
+      if (path.endsWith('/admin') || path.includes('/admin/') || hash === '#admin') {
+        setViewMode('admin');
+      } else if (
+        path.endsWith('/register') ||
+        path.includes('/register/') ||
+        hash === '#register' ||
+        hash === '#reg' ||
+        search.includes('page=register')
+      ) {
+        setViewMode('register');
+      } else {
+        setViewMode('site');
+      }
     };
 
     checkRoute();
@@ -37,15 +53,20 @@ export function App() {
 
   const navigateToAdmin = () => {
     window.location.hash = 'admin';
-    setIsAdminView(true);
+    setViewMode('admin');
   };
 
   const navigateToSite = () => {
-    window.location.hash = '';
-    setIsAdminView(false);
+    if (window.location.search) {
+      window.history.replaceState(null, '', window.location.pathname + '#');
+    } else {
+      window.location.hash = '';
+    }
+    setViewMode('site');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  if (isAdminView) {
+  if (viewMode === 'admin') {
     return (
       <Suspense
         fallback={
@@ -57,6 +78,10 @@ export function App() {
         <AdminDashboard onBackToSite={navigateToSite} />
       </Suspense>
     );
+  }
+
+  if (viewMode === 'register') {
+    return <StandaloneRegistration onBackToSite={navigateToSite} />;
   }
 
   return (
