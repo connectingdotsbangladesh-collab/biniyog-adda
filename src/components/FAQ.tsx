@@ -1,27 +1,28 @@
 import React, { useState } from 'react';
 import { Plus, Minus } from 'lucide-react';
+import { eventConfig } from '../config/event';
 
 export const FAQ: React.FC = () => {
   const faqs = [
     {
-      q: 'এটি কি অনলাইন আয়োজন?',
-      a: 'এটি সরাসরি অংশগ্রহণভিত্তিক অফলাইন আয়োজনের পরিকল্পনা।',
+      q: 'অনুষ্ঠানটি কবে, কখন এবং কোথায় অনুষ্ঠিত হবে?',
+      a: `অনুষ্ঠানটি আগামী ${eventConfig.dateFormattedBn} (${eventConfig.dayOfWeekBn}), সকাল ৯:৩০টা থেকে বিকেল ৩:০০টা পর্যন্ত অনুষ্ঠিত হবে। ভেন্যু: ${eventConfig.venueName} (${eventConfig.venueLandmark}), ঠিকানা: ${eventConfig.venueAddress}।`,
     },
     {
-      q: 'সময় ও ভেন্যু কোথায় জানতে পারব?',
-      a: 'চূড়ান্ত হলে পেজে জানানো হবে এবং নিবন্ধিত আগ্রহীদের সঙ্গে যোগাযোগ করা হবে।',
+      q: 'এন্ট্রি ফি কত এবং কীভাবে পরিশোধ করব?',
+      a: `অনুষ্ঠানের এন্ট্রি ফি ৩৯০ টাকা। আমাদের পার্সোনাল বিকাশ বা নগদ নম্বর ${eventConfig.payment.personalNumber}-এ ৩৯০ টাকা Send Money করে নিবন্ধন ফর্মে আপনার প্রেরকের নম্বর এবং ট্রানজ্যাকশন আইডি (Transaction ID) জমা দিতে হবে।`,
     },
     {
-      q: 'এখন কি কোনো ফি দিতে হবে?',
-      a: 'না। এই ফর্মে শুধু প্রাথমিক আগ্রহ নেওয়া হচ্ছে। অংশগ্রহণ ফি নির্ধারিত হলে জানানো হবে।',
+      q: 'প্রোগ্রামে সকালের নাস্তা, দুপুরের খাবার ও নামাজের বিরতি কি থাকবে?',
+      a: 'হ্যাঁ। সকাল ৯:৩০টায় ভেন্যুতে প্রবেশ করেই থাকছে সকালের নাস্তা (Breakfast)। এছাড়া দুপুর ১:০০টা থেকে ১:৩০টা পর্যন্ত জোহরের নামাজের বিরতি এবং ১:৩০টা থেকে ২:০০টা পর্যন্ত দুপুরের খাবার (Lunch)-এর ব্যবস্থা থাকবে।',
     },
     {
-      q: 'ফর্ম পূরণ করলেই কি আসন নিশ্চিত?',
-      a: 'না। বিস্তারিত জানার পর অংশগ্রহণ নিশ্চিত করার পরবর্তী ধাপ জানানো হবে।',
+      q: 'অনুষ্ঠানে কারা বক্তব্য রাখবেন এবং প্রশ্নোত্তর পর্ব কি থাকবে?',
+      a: 'সকাল ১০:০০–১১:০০টা আরিফুল ইসলাম ভাই, ১১:০০–১২:০০টা মোহাম্মদ একরাম ভাই এবং ১২:০০–১:০০টা গাজী মোহাম্মদ ভাই বক্তব্য রাখবেন। এরপর দুপুর ২:০০টা থেকে ৩:০০টা পর্যন্ত সরাসরি প্রশ্নোত্তর পর্ব (Q&A Session) অনুষ্ঠিত হবে।',
     },
     {
-      q: 'আগে অভিজ্ঞতা থাকা প্রয়োজন?',
-      a: 'নিজের পেশা ও জানতে আগ্রহী বিষয় ফর্মে উল্লেখ করুন, যাতে আলোচনার প্রস্তুতিতে তা বিবেচনা করা যায়।',
+      q: 'টাকা পাঠিয়ে ফর্ম পূরণের পর আসন কীভাবে নিশ্চিত হবে?',
+      a: 'আপনি ফর্মে ট্রানজ্যাকশন আইডি ও নম্বর জমা দেওয়ার পর আমাদের আয়োজক টিম পেমেন্টটি যাচাই করে আপনার মোবাইল/WhatsApp নম্বরে আসন নিশ্চিতকরণ বার্তা পৌঁছে দেবেন।',
     },
   ];
 
@@ -37,11 +38,11 @@ export const FAQ: React.FC = () => {
             <span className="w-1.5 h-1.5 rounded-full bg-[#C9A66B] shadow-[0_0_8px_#C9A66B]"></span>
             <span>সচরাচর জিজ্ঞাসা</span>
           </div>
-          <h2 className="text-2xl sm:text-4xl lg:text-[46px] font-serif-bn font-bold text-white tracking-tight">
+          <h2 className="text-2xl sm:text-4xl lg:text-[42px] font-bengali font-bold text-white">
             সাধারণ প্রশ্ন ও উত্তর
           </h2>
           <p className="mt-3 text-base sm:text-lg text-[#D1E2D9]">
-            আয়োজন ও প্রাথমিক নিবন্ধন সম্পর্কিত প্রয়োজনীয় তথ্যাবলি
+            সময়সূচি, ভেন্যু ও পেমেন্ট সম্পর্কিত প্রয়োজনীয় তথ্যাবলি
           </p>
         </div>
 
@@ -60,7 +61,7 @@ export const FAQ: React.FC = () => {
                   className="w-full text-left flex items-center justify-between gap-4 sm:gap-6 focus-visible:outline-[#C9A66B] group py-1 min-h-[48px]"
                   aria-expanded={isOpen}
                 >
-                  <span className="text-lg sm:text-xl font-serif-bn font-bold text-white group-hover:text-[#F7E7CD] transition-colors leading-snug">
+                  <span className="text-lg sm:text-xl font-bengali font-bold text-white group-hover:text-[#F7E7CD] transition-colors leading-snug">
                     {faq.q}
                   </span>
                   <div className="w-8 h-8 rounded-full border border-[#C9A66B]/35 bg-[#C9A66B]/10 flex items-center justify-center flex-shrink-0 text-[#F5E5C9] group-hover:border-[#C9A66B] transition-colors">

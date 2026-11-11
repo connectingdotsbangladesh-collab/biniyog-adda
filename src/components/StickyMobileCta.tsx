@@ -36,7 +36,7 @@ export const StickyMobileCta: React.FC = () => {
           href="#registration"
           className="w-full bg-gradient-to-r from-[#C9A66B] via-[#E2C899] to-[#9A773F] text-[#081712] py-3.5 px-5 rounded-xl font-bold text-base shadow-button-gold flex items-center justify-center gap-2 active:translate-y-[1px] min-h-[48px]"
         >
-          <span>আগ্রহ নিবন্ধন করুন</span>
+          <span>আসন নিশ্চিত করুন (৳৩৯০)</span>
           <ArrowUpRight className="w-4 h-4 text-[#081712]" />
         </a>
       </div>

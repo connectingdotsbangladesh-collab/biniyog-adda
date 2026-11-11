@@ -23,7 +23,8 @@ import {
   Briefcase,
   MapPin,
   Mail,
-  UserPlus
+  UserPlus,
+  Receipt
 } from 'lucide-react';
 
 interface AdminDashboardProps {
@@ -52,6 +53,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToSite }) 
   const [searchQuery, setSearchQuery] = useState('');
   const [occupationFilter, setOccupationFilter] = useState('all');
   const [statusFilter, setStatusFilter] = useState('all');
+  const [paymentFilter, setPaymentFilter] = useState('all');
 
   // Detail Modal state
   const [selectedApplicant, setSelectedApplicant] = useState<StoredApplicant | null>(null);
@@ -64,6 +66,9 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToSite }) 
     occupation: 'চাকরিজীবী',
     area: '',
     email: '',
+    paymentMethod: 'bKash' as 'bKash' | 'Nagad',
+    paymentSenderPhone: '',
+    transactionId: '',
     interest: '',
   });
 
@@ -193,13 +198,18 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToSite }) 
       return;
     }
 
+    const cleanPhone = newApplicantForm.phone.replace(/[^0-9]/g, '');
     const saved = saveApplicantLocally({
-      eventId: 'biniyog-adda-2026-11-14',
+      eventId: 'orthalaap-2026-11-21',
       name: newApplicantForm.name,
-      phoneNormalized: newApplicantForm.phone.replace(/[^0-9]/g, ''),
+      phoneNormalized: cleanPhone,
       occupation: newApplicantForm.occupation,
       area: newApplicantForm.area || 'ঢাকা',
       email: newApplicantForm.email,
+      paymentMethod: newApplicantForm.paymentMethod,
+      paymentSenderPhone:
+        newApplicantForm.paymentSenderPhone.replace(/[^0-9]/g, '') || cleanPhone,
+      transactionId: newApplicantForm.transactionId.trim().toUpperCase() || 'MANUAL',
       interest: newApplicantForm.interest,
       consentGiven: true,
       source: 'manual',
@@ -213,24 +223,32 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToSite }) 
       occupation: 'চাকরিজীবী',
       area: '',
       email: '',
+      paymentMethod: 'bKash',
+      paymentSenderPhone: '',
+      transactionId: '',
       interest: '',
     });
   };
 
   // Filtered List
   const filteredApplicants = useMemo(() => {
+    const q = searchQuery.trim().toLowerCase();
     return applicants.filter((item) => {
       const matchSearch =
-        searchQuery === '' ||
-        item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        item.phone_normalized.includes(searchQuery);
+        q === '' ||
+        item.name.toLowerCase().includes(q) ||
+        item.phone_normalized.includes(q) ||
+        (item.transaction_id || '').toLowerCase().includes(q) ||
+        (item.payment_sender_phone || '').includes(q);
 
       const matchOccupation = occupationFilter === 'all' || item.occupation === occupationFilter;
       const matchStatus = statusFilter === 'all' || item.status === statusFilter;
+      const matchPayment =
+        paymentFilter === 'all' || (item.payment_method || '') === paymentFilter;
 
-      return matchSearch && matchOccupation && matchStatus;
+      return matchSearch && matchOccupation && matchStatus && matchPayment;
     });
-  }, [applicants, searchQuery, occupationFilter, statusFilter]);
+  }, [applicants, searchQuery, occupationFilter, statusFilter, paymentFilter]);
 
   // Export CSV with UTF-8 BOM
   const handleExportCsv = () => {
@@ -241,6 +259,9 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToSite }) 
       'পেশা',
       'এলাকা/জেলা',
       'ইমেইল',
+      'পেমেন্ট মাধ্যম',
+      'প্রেরকের নম্বর',
+      'ট্রানজ্যাকশন আইডি (TrxID)',
       'আগ্রহ ও প্রশ্ন',
       'বর্তমান স্ট্যাটাস',
       'নিবন্ধনের সময় (UTC)',
@@ -253,6 +274,9 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToSite }) 
       item.occupation,
       item.area,
       item.email || '',
+      item.payment_method || '',
+      item.payment_sender_phone || '',
+      item.transaction_id || '',
       item.interest || '',
       item.status,
       item.created_at,
@@ -263,10 +287,11 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToSite }) 
   };
 
   // WhatsApp quick chat helper
-  const getWhatsAppLink = (phone: string, name: string) => {
+  const getWhatsAppLink = (phone: string, name: string, trxId?: string) => {
     const cleanNumber = phone.startsWith('0') ? '88' + phone : phone;
+    const trxNote = trxId ? ` (TrxID: ${trxId})` : '';
     const message = encodeURIComponent(
-      `আসসালামু আলাইকুম ${name} ভাই/আপু, অর্থালাপ (১৪ নভেম্বর ২০২৬) অফলাইন কর্মশালায় আপনার প্রাথমিক আগ্রহ নিবন্ধনের জন্য ধন্যবাদ। বিস্তারিত আলোচনার জন্য যোগাযোগ করছি।`
+      `আসসালামু আলাইকুম ${name} ভাই/আপু, অর্থালাপ (২১ নভেম্বর ২০২৬, সকাল ৯:৩০টা, পূর্ব শেওড়াপাড়া) প্রোগ্রামে আপনার নিবন্ধন${trxNote} সংক্রান্ত বিষয়ে যোগাযোগ করছি।`
     );
     return `https://wa.me/${cleanNumber}?text=${message}`;
   };
@@ -527,11 +552,24 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToSite }) 
               <Search className="w-4 h-4 text-[#A9C4B7] absolute left-3.5 top-3.5" />
               <input
                 type="text"
-                placeholder="নাম বা মোবাইল নম্বর দিয়ে খুঁজুন..."
+                placeholder="নাম, মোবাইল বা TrxID খুঁজুন..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full pl-10 pr-4 py-2.5 text-sm rounded-xl border border-[#204E3C] bg-[#05140F] text-white focus:border-[#C9A66B] placeholder:text-[#88A698]"
               />
+            </div>
+
+            {/* Payment Method Filter */}
+            <div className="w-full sm:w-40">
+              <select
+                value={paymentFilter}
+                onChange={(e) => setPaymentFilter(e.target.value)}
+                className="w-full py-2.5 px-3.5 text-sm rounded-xl border border-[#204E3C] bg-[#05140F] text-white focus:border-[#C9A66B]"
+              >
+                <option value="all">সব পেমেন্ট</option>
+                <option value="bKash">bKash</option>
+                <option value="Nagad">Nagad</option>
+              </select>
             </div>
 
             {/* Occupation Filter */}
@@ -599,6 +637,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToSite }) 
                   <tr>
                     <th className="px-5 py-4 font-semibold">আবেদনকারীর নাম ও এলাকা</th>
                     <th className="px-5 py-4 font-semibold">মোবাইল ও দ্রুত যোগাযোগ</th>
+                    <th className="px-5 py-4 font-semibold">পেমেন্ট ও TrxID</th>
                     <th className="px-5 py-4 font-semibold">পেশা</th>
                     <th className="px-5 py-4 font-semibold">বর্তমান স্ট্যাটাস</th>
                     <th className="px-5 py-4 font-semibold">তারিখ</th>
@@ -631,7 +670,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToSite }) 
                             <span>কল</span>
                           </a>
                           <a
-                            href={getWhatsAppLink(item.phone_normalized, item.name)}
+                            href={getWhatsAppLink(item.phone_normalized, item.name, item.transaction_id)}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="inline-flex items-center gap-1 text-[11px] text-emerald-400 hover:text-emerald-300"
@@ -641,6 +680,33 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToSite }) 
                             <span>WhatsApp</span>
                           </a>
                         </div>
+                      </td>
+
+                      {/* Payment Details */}
+                      <td className="px-5 py-4">
+                        {item.transaction_id ? (
+                          <div className="space-y-1">
+                            <div className="flex items-center gap-1.5">
+                              <span
+                                className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${
+                                  item.payment_method === 'Nagad'
+                                    ? 'bg-[#F7941D]/20 text-amber-200 border border-[#F7941D]/40'
+                                    : 'bg-[#E2136E]/20 text-pink-200 border border-[#E2136E]/40'
+                                }`}
+                              >
+                                {item.payment_method || 'bKash'}
+                              </span>
+                              <span className="font-mono text-xs font-bold text-[#F5E5C9]">
+                                {item.transaction_id}
+                              </span>
+                            </div>
+                            <div className="text-[11px] font-mono text-[#A9C4B7]">
+                              প্রেরক: {item.payment_sender_phone || item.phone_normalized}
+                            </div>
+                          </div>
+                        ) : (
+                          <span className="text-xs text-[#6A8778]">তথ্য নেই</span>
+                        )}
                       </td>
 
                       {/* Occupation */}
@@ -740,7 +806,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToSite }) 
               </a>
 
               <a
-                href={getWhatsAppLink(selectedApplicant.phone_normalized, selectedApplicant.name)}
+                href={getWhatsAppLink(selectedApplicant.phone_normalized, selectedApplicant.name, selectedApplicant.transaction_id)}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-emerald-950/70 hover:bg-emerald-900/80 text-emerald-200 border border-emerald-700/60 text-sm font-semibold transition-colors"
@@ -748,6 +814,31 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToSite }) 
                 <MessageCircle className="w-4 h-4" />
                 <span>WhatsApp মেসেজ</span>
               </a>
+            </div>
+
+            {/* Payment Verification Card inside Detail Modal */}
+            <div className="p-4 rounded-xl bg-[#05140F] border border-[#C9A66B]/40 space-y-2.5">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-semibold text-[#C9A66B] flex items-center gap-1.5">
+                  <Receipt className="w-4 h-4" />
+                  <span>পেমেন্ট যাচাইকরণ (৳৩৯০)</span>
+                </span>
+                <span className="text-xs font-bold px-2.5 py-0.5 rounded bg-white/[0.08] text-white">
+                  {selectedApplicant.payment_method || 'উল্লেখ নেই'}
+                </span>
+              </div>
+              <div className="flex items-center justify-between text-xs pt-1 border-t border-[#204E3C]/50">
+                <span className="text-[#A9C4B7]">প্রেরকের নম্বর:</span>
+                <span className="font-mono font-bold text-white">
+                  {selectedApplicant.payment_sender_phone || '—'}
+                </span>
+              </div>
+              <div className="flex items-center justify-between text-xs">
+                <span className="text-[#A9C4B7]">ট্রানজ্যাকশন আইডি:</span>
+                <span className="font-mono font-bold text-emerald-300 text-sm">
+                  {selectedApplicant.transaction_id || '—'}
+                </span>
+              </div>
             </div>
 
             {/* Detailed info */}
@@ -916,6 +1007,50 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToSite }) 
                     setNewApplicantForm({ ...newApplicantForm, email: e.target.value })
                   }
                   className="w-full px-3.5 py-2.5 rounded-xl border border-[#204E3C] bg-[#05140F] text-white focus:border-[#C9A66B]"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-semibold text-white mb-1">পেমেন্ট মাধ্যম</label>
+                  <select
+                    value={newApplicantForm.paymentMethod}
+                    onChange={(e) =>
+                      setNewApplicantForm({
+                        ...newApplicantForm,
+                        paymentMethod: e.target.value as 'bKash' | 'Nagad',
+                      })
+                    }
+                    className="w-full px-3 py-2.5 rounded-xl border border-[#204E3C] bg-[#05140F] text-white focus:border-[#C9A66B]"
+                  >
+                    <option value="bKash">bKash</option>
+                    <option value="Nagad">Nagad</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-white mb-1">TrxID</label>
+                  <input
+                    type="text"
+                    placeholder="BKA7X9..."
+                    value={newApplicantForm.transactionId}
+                    onChange={(e) =>
+                      setNewApplicantForm({ ...newApplicantForm, transactionId: e.target.value })
+                    }
+                    className="w-full px-3 py-2.5 rounded-xl border border-[#204E3C] bg-[#05140F] text-white font-mono uppercase focus:border-[#C9A66B]"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-white mb-1">প্রেরকের নম্বর (ঐচ্ছিক)</label>
+                <input
+                  type="tel"
+                  placeholder="01XXXXXXXXX"
+                  value={newApplicantForm.paymentSenderPhone}
+                  onChange={(e) =>
+                    setNewApplicantForm({ ...newApplicantForm, paymentSenderPhone: e.target.value })
+                  }
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-[#204E3C] bg-[#05140F] text-white font-mono focus:border-[#C9A66B]"
                 />
               </div>
 

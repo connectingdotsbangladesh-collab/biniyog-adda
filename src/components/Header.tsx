@@ -10,7 +10,7 @@ export const Header: React.FC<HeaderProps> = ({ onAdminClick }) => {
     <header className="sticky top-0 z-40 bg-[#06130E]/85 backdrop-blur-xl border-b border-[#204E3C]/60 transition-all">
       <div className="max-w-[1160px] mx-auto px-4 sm:px-8 h-18 sm:h-22 py-3 flex items-center justify-between">
         
-        {/* Brand Masthead / Logo in Posh Glass Wrapper */}
+        {/* Brand Masthead / Logo */}
         <a 
           href="#" 
           className="flex items-center gap-3 group focus-visible:outline-posh-gold min-h-[44px]"
@@ -33,7 +33,7 @@ export const Header: React.FC<HeaderProps> = ({ onAdminClick }) => {
         </a>
 
         {/* Curated Editorial Navigation */}
-        <nav className="hidden md:flex items-center gap-8 lg:gap-10 text-[15px] font-medium tracking-wide">
+        <nav className="hidden md:flex items-center gap-7 lg:gap-9 text-[15px] font-medium tracking-wide">
           <a
             href="#topics"
             className="text-[#D1E2D9] hover:text-white transition-colors relative py-1 after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-[1.5px] after:bg-[#C9A66B] hover:after:w-full after:transition-all focus-visible:outline-[#C9A66B]"
@@ -41,16 +41,16 @@ export const Header: React.FC<HeaderProps> = ({ onAdminClick }) => {
             আলোচনার বিষয়
           </a>
           <a
-            href="#audience"
+            href="#speakers"
             className="text-[#D1E2D9] hover:text-white transition-colors relative py-1 after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-[1.5px] after:bg-[#C9A66B] hover:after:w-full after:transition-all focus-visible:outline-[#C9A66B]"
           >
-            অংশগ্রহণকারী
+            আলোচকবৃন্দ
           </a>
           <a
-            href="#details"
+            href="#schedule"
             className="text-[#D1E2D9] hover:text-white transition-colors relative py-1 after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-[1.5px] after:bg-[#C9A66B] hover:after:w-full after:transition-all focus-visible:outline-[#C9A66B]"
           >
-            আয়োজনের তথ্য
+            সময়সূচি ও ভেন্যু
           </a>
           <a
             href="#faq"
@@ -70,13 +70,12 @@ export const Header: React.FC<HeaderProps> = ({ onAdminClick }) => {
               আয়োজক প্রবেশ
             </button>
           )}
-
           <a
             href="#registration"
-            className="group relative inline-flex items-center gap-2 bg-gradient-to-r from-[#C9A66B] via-[#E5CE9F] to-[#9A773F] text-[#06130E] text-xs sm:text-[15px] font-bold px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl transition-all duration-300 shadow-button-gold hover:brightness-110 active:translate-y-[1px] focus-visible:outline-[#C9A66B] min-h-[42px] sm:min-h-[46px]"
+            className="inline-flex items-center gap-1.5 bg-gradient-to-r from-[#C9A66B] via-[#E2C899] to-[#9A773F] text-[#06130E] text-xs sm:text-sm font-bold px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl shadow-button-gold hover:brightness-110 transition-all duration-300 active:translate-y-[1px] focus-visible:outline-[#C9A66B] min-h-[44px]"
           >
-            <span>আগ্রহ নিবন্ধন</span>
-            <ArrowUpRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#06130E] transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+            <span>আসন নিশ্চিত করুন</span>
+            <ArrowUpRight className="w-4 h-4 text-[#06130E]" />
           </a>
         </div>
 

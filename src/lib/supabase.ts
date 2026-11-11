@@ -24,6 +24,9 @@ export interface RegistrationSubmission {
   area: string;
   email?: string;
   interest?: string;
+  paymentMethod: 'bKash' | 'Nagad';
+  paymentSenderPhone: string;
+  transactionId: string;
   consentGiven: boolean;
   honeypot?: string;
   source?: string;
@@ -44,6 +47,9 @@ export interface StoredApplicant {
   area: string;
   email: string | null;
   interest: string | null;
+  payment_method?: 'bKash' | 'Nagad';
+  payment_sender_phone?: string;
+  transaction_id?: string;
   consent_version: string;
   consented_at: string;
   status: 'interested' | 'contacted' | 'confirmed' | 'cancelled';
@@ -52,7 +58,8 @@ export interface StoredApplicant {
   created_at: string;
 }
 
-const STORAGE_KEY = 'biniyog_adda_applications_v1';
+const STORAGE_KEY = 'orthalaap_applications_v2';
+const LEGACY_STORAGE_KEY = 'biniyog_adda_applications_v1';
 
 // Initial preloaded sample applications so the admin can test immediately
 const DEFAULT_APPLICANTS: StoredApplicant[] = [
@@ -61,44 +68,35 @@ const DEFAULT_APPLICANTS: StoredApplicant[] = [
     name: 'তানভীর আহমেদ',
     phone_normalized: '01711223344',
     occupation: 'চাকরিজীবী',
-    area: 'ধানমন্ডি, ঢাকা',
+    area: 'মিরপুর, ঢাকা',
     email: 'tanvir.ahmed@example.com',
-    interest: 'চাকরির পাশাপাশি ডিজিটাল অ্যাসেট ও পরোক্ষ আয়ের কাঠামো কীভাবে শুরু করব তা বিস্তারিত জানতে চাই।',
-    consent_version: 'v1',
-    consented_at: '2026-11-07T08:30:00.000Z',
-    status: 'interested',
+    interest: 'চাকরির পাশাপাশি প্যাসিভ ইনকামের নির্ভরযোগ্য পদ্ধতিগুলো জানতে চাই।',
+    payment_method: 'bKash',
+    payment_sender_phone: '01711223344',
+    transaction_id: 'BKA9X42MP1',
+    consent_version: 'v2',
+    consented_at: '2026-11-11T08:30:00.000Z',
+    status: 'confirmed',
+    status_updated_at: '2026-11-11T09:00:00.000Z',
     source: 'direct',
-    created_at: '2026-11-07T08:30:00.000Z',
+    created_at: '2026-11-11T08:30:00.000Z',
   },
   {
     id: 'app-002',
     name: 'ফারহানা ইসলাম',
     phone_normalized: '01822334455',
     occupation: 'ফ্রিল্যান্সার',
-    area: 'মিরপুর, ঢাকা',
+    area: 'শেওড়াপাড়া, ঢাকা',
     email: 'farhana.dev@example.com',
-    interest: 'শুধুমাত্র ক্লায়েন্ট সার্ভিসের বাইরে কীভাবে স্থায়ী ডিজিটাল রিসোর্স বা প্রোডাক্ট বানিয়ে নিয়মিত ক্যাশ-ফ্লো আনা যায়।',
-    consent_version: 'v1',
-    consented_at: '2026-11-07T09:15:00.000Z',
-    status: 'contacted',
-    status_updated_at: '2026-11-07T10:00:00.000Z',
+    interest: 'ফ্রিল্যান্সিংয়ের পাশাপাশি বহুমাত্রিক আয়ের কাঠামো কীভাবে গড়ে তোলা যায়।',
+    payment_method: 'Nagad',
+    payment_sender_phone: '01822334455',
+    transaction_id: 'NGD7281940K',
+    consent_version: 'v2',
+    consented_at: '2026-11-11T09:15:00.000Z',
+    status: 'interested',
     source: 'direct',
-    created_at: '2026-11-07T09:15:00.000Z',
-  },
-  {
-    id: 'app-003',
-    name: 'মাহমুদুল হক',
-    phone_normalized: '01933445566',
-    occupation: 'ব্যবসায়ী বা উদ্যোক্তা',
-    area: 'উত্তরা, ঢাকা',
-    email: 'mahmud.trade@example.com',
-    interest: 'ব্যবসার অতিরিক্ত লাভ দিয়ে ঝুঁকিহীন বা সীমিত ঝুঁকির বহুমুখী আয়ের পোর্টফোলিও বানানোর উপায়।',
-    consent_version: 'v1',
-    consented_at: '2026-11-07T10:45:00.000Z',
-    status: 'confirmed',
-    status_updated_at: '2026-11-07T11:20:00.000Z',
-    source: 'direct',
-    created_at: '2026-11-07T10:45:00.000Z',
+    created_at: '2026-11-11T09:15:00.000Z',
   },
 ];
 
@@ -107,7 +105,7 @@ const DEFAULT_APPLICANTS: StoredApplicant[] = [
  */
 export function getStoredApplicants(): StoredApplicant[] {
   try {
-    const raw = localStorage.getItem(STORAGE_KEY);
+    const raw = localStorage.getItem(STORAGE_KEY) || localStorage.getItem(LEGACY_STORAGE_KEY);
     if (!raw) {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(DEFAULT_APPLICANTS));
       return DEFAULT_APPLICANTS;
@@ -126,8 +124,13 @@ export function getStoredApplicants(): StoredApplicant[] {
 export function saveApplicantLocally(data: RegistrationSubmission): StoredApplicant {
   const existing = getStoredApplicants();
   
-  // Check duplicate
-  const duplicate = existing.find((item) => item.phone_normalized === data.phoneNormalized);
+  // Check duplicate by phone + transaction id
+  const cleanTrx = data.transactionId.trim().toUpperCase();
+  const duplicate = existing.find(
+    (item) =>
+      item.phone_normalized === data.phoneNormalized &&
+      (item.transaction_id || '').toUpperCase() === cleanTrx
+  );
   if (duplicate) {
     return duplicate;
   }
@@ -140,7 +143,10 @@ export function saveApplicantLocally(data: RegistrationSubmission): StoredApplic
     area: data.area.trim(),
     email: data.email?.trim() || null,
     interest: data.interest?.trim() || null,
-    consent_version: 'v1',
+    payment_method: data.paymentMethod,
+    payment_sender_phone: data.paymentSenderPhone,
+    transaction_id: cleanTrx,
+    consent_version: 'v2',
     consented_at: new Date().toISOString(),
     status: 'interested',
     source: data.source || 'direct',
@@ -203,6 +209,9 @@ export async function submitRegistration(data: RegistrationSubmission): Promise<
         p_consent_given: data.consentGiven,
         p_honeypot: data.honeypot || null,
         p_source: data.source || 'direct',
+        p_payment_method: data.paymentMethod,
+        p_payment_sender_phone: data.paymentSenderPhone,
+        p_transaction_id: data.transactionId.trim().toUpperCase(),
       });
 
       if (!rpcError && rpcData?.success) {

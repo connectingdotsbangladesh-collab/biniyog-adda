@@ -1,35 +1,36 @@
 import React from 'react';
-import { Compass, Lightbulb, MessageSquare, Milestone } from 'lucide-react';
+import { Compass, Lightbulb, MessageSquare, Layers } from 'lucide-react';
+import { eventConfig } from '../config/event';
 
 export const Topics: React.FC = () => {
   const topics = [
     {
       number: '০১',
-      title: 'প্যাসিভ ইনকামের ধারণা',
-      description: 'একটি আয়ের উৎস তৈরি করতে শুরুতে কী ধরনের প্রস্তুতি ও কাজ প্রয়োজন, তা নিয়ে আলোচনা।',
-      focus: 'বাস্তবধর্মী ভিত্তি ও প্রত্যাশা',
+      title: 'প্যাসিভ ইনকামের গুরুত্ব ও ভিত্তি',
+      description: 'কেন শুধুমাত্র একমুখী আয়ের ওপর নির্ভর না করে প্যাসিভ ইনকামের ভিত্তি তৈরি করা জরুরি, তার বাস্তবসম্মত বিশ্লেষণ।',
+      focus: 'আরিফুল ইসলাম · সকাল ১০:০০ – ১১:০০টা',
       icon: Lightbulb,
     },
     {
       number: '০২',
-      title: 'নিজের জন্য সুযোগ বাছাই',
-      description: 'সময়, দক্ষতা, পুঁজি ও সম্ভাব্য ঝুঁকি বিবেচনায় কোন বিষয়গুলো যাচাই করবেন।',
-      focus: 'সুযোগ ও ঝুঁকি মূল্যায়ন',
-      icon: Compass,
+      title: 'বহুমাত্রিক আয়ের কৌশল ও পদ্ধতি',
+      description: 'সময়, দক্ষতা ও পুঁজির সঠিক সমন্বয়ে কীভাবে একাধিক নির্ভরযোগ্য আয়ের উৎস তৈরি করা যায়।',
+      focus: 'মোহাম্মদ একরাম · সকাল ১১:০০ – ১২:০০টা',
+      icon: Layers,
     },
     {
       number: '০৩',
-      title: 'অভিজ্ঞতা ও প্রশ্নোত্তর',
-      description: 'আরিফুল ইসলামের অভিজ্ঞতা শুনুন এবং নিজের প্রশ্নগুলো সরাসরি করার সুযোগ নিন।',
-      focus: 'খোলামেলা মতবিনিময়',
-      icon: MessageSquare,
+      title: 'সুযোগ যাচাই ও ধারাবাহিক অগ্রগতি',
+      description: 'সম্ভাব্য ঝুঁকি মূল্যায়ন, সঠিক পথ নির্বাচন এবং দীর্ঘমেয়াদে আয়ের উৎস সচল রাখার কার্যকর প্রক্রিয়া।',
+      focus: 'গাজী মোহাম্মদ · দুপুর ১২:০০ – ১:০০টা',
+      icon: Compass,
     },
     {
       number: '০৪',
-      title: 'পরবর্তী পদক্ষেপের খসড়া',
-      description: 'আলোচনা থেকে নিজের জন্য একটি প্রাথমিক কর্মপরিকল্পনা ভাবার অনুশীলন।',
-      focus: 'ব্যক্তিগত প্রাথমিক পরিকল্পনা',
-      icon: Milestone,
+      title: 'সরাসরি প্রশ্নোত্তর পর্ব (Q&A)',
+      description: 'নিজের অবস্থান, পুঁজি বা পরিকল্পনা সম্পর্কিত প্রশ্নগুলো সরাসরি আলোচকদের সামনে তুলে ধরার উন্মুক্ত সেশন।',
+      focus: 'সকল বক্তা · দুপুর ২:০০ – ৩:০০টা',
+      icon: MessageSquare,
     },
   ];
 
@@ -42,53 +43,47 @@ export const Topics: React.FC = () => {
           <div>
             <div className="text-xs uppercase tracking-widest font-semibold text-[#C9A66B] mb-2 flex items-center gap-2">
               <span className="w-1.5 h-1.5 rounded-full bg-[#C9A66B] shadow-[0_0_8px_#C9A66B]"></span>
-              <span>সিলেবাস ও আলোচনার পরিধি</span>
+              <span>অনুষ্ঠানের মূল বিষয়</span>
             </div>
-            <h2 className="text-2xl sm:text-4xl lg:text-[46px] font-serif-bn font-bold text-white tracking-tight">
-              কী নিয়ে আলোচনা হবে?
+            <h2 className="text-2xl sm:text-4xl lg:text-[42px] font-bengali font-bold text-white">
+              {eventConfig.topic}
             </h2>
           </div>
-          <p className="max-w-md text-base sm:text-lg text-[#D1E2D9] leading-relaxed">
-            বাস্তবধর্মী দৃষ্টিভঙ্গি ও অভিজ্ঞতার আলোকে সাজানো মূল আলোচনার বিষয়গুলো।
+          <p className="text-base sm:text-lg text-[#D1E2D9] max-w-md font-normal leading-relaxed">
+            তিনটি বিষয়ভিত্তিক সেশন ও উন্মুক্ত প্রশ্নোত্তর পর্বের মাধ্যমে সাজানো পুরো দিনের কার্যকর কর্মশালা।
           </p>
         </div>
 
-        {/* 4 Posh Glass Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
-          {topics.map((t, idx) => {
-            const Icon = t.icon;
+        {/* 4 Posh Editorial Topic Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-6">
+          {topics.map((topic, idx) => {
+            const Icon = topic.icon;
             return (
               <div
                 key={idx}
-                className="posh-glass-card rounded-2xl sm:rounded-3xl p-6 sm:p-9 flex flex-col justify-between group transition-all duration-300"
+                className="posh-glass-card rounded-2xl p-6 sm:p-7 flex flex-col justify-between group transition-all duration-300"
               >
                 <div>
-                  {/* Top Bar with Number & Focus Badge */}
                   <div className="flex items-center justify-between mb-5">
-                    <span className="font-serif-bn text-3xl sm:text-4xl font-bold text-gold-gradient">
-                      {t.number}
+                    <span className="font-mono text-2xl font-bold text-gold-gradient">
+                      {topic.number}
                     </span>
-                    <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/[0.06] border border-[#204E3C] text-xs sm:text-[13px] font-semibold text-[#F7E7CD]">
-                      <Icon className="w-3.5 h-3.5 text-[#C9A66B]" />
-                      <span>{t.focus}</span>
+                    <div className="w-10 h-10 rounded-xl bg-[#C9A66B]/15 border border-[#C9A66B]/30 flex items-center justify-center text-[#F5E5C9]">
+                      <Icon className="w-5 h-5 text-[#C9A66B]" />
                     </div>
                   </div>
-
-                  {/* Title */}
-                  <h3 className="text-xl sm:text-2xl font-serif-bn font-bold text-white mb-3 group-hover:text-[#F3DFBA] transition-colors leading-snug">
-                    {t.title}
+                  
+                  <h3 className="text-xl font-bengali font-bold text-white mb-3 group-hover:text-[#F3DFBA] transition-colors">
+                    {topic.title}
                   </h3>
-
-                  {/* Description */}
-                  <p className="text-base sm:text-[17px] text-[#D8E8DF] leading-relaxed font-normal">
-                    {t.description}
+                  <p className="text-sm sm:text-[15px] text-[#D4E4DC] leading-relaxed font-normal">
+                    {topic.description}
                   </p>
                 </div>
 
-                <div className="mt-7 pt-4 border-t border-[#204E3C]/60 flex items-center justify-between text-xs sm:text-sm text-[#95B2A4]">
-                  <span>মডিউল 0{idx + 1}</span>
-                  <span className="text-[#C9A66B] font-medium group-hover:translate-x-1 transition-transform">
-                    অংশগ্রহণভিত্তিক আলোচনা →
+                <div className="mt-6 pt-4 border-t border-[#204E3C]/60">
+                  <span className="inline-block text-xs font-semibold text-[#F5E5C9] bg-[#C9A66B]/15 px-3 py-1 rounded-full border border-[#C9A66B]/30">
+                    {topic.focus}
                   </span>
                 </div>
               </div>
