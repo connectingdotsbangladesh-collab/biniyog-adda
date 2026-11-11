@@ -37,7 +37,7 @@ export const Hero: React.FC = () => {
 
             {/* Editorial Description */}
             <p className="text-base sm:text-lg lg:text-[19px] text-[#D8E8DF] leading-relaxed max-w-xl font-normal">
-              <strong className="text-white font-semibold">আরিফুল ইসলাম</strong>, <strong className="text-white font-semibold">মোহাম্মদ একরাম</strong> এবং <strong className="text-white font-semibold">গাজী মোহাম্মদ</strong>-এর সঙ্গে দিনব্যাপী বিশেষ অফলাইন কর্মশালা <strong className="text-[#F5E5C9] font-semibold">অর্থালাপ</strong> — যেখানে থাকছে সকালের নাস্তা, দুপুরের খাবার ও সরাসরি প্রশ্নোত্তর পর্ব।
+              <strong className="text-white font-semibold">আরিফুল ইসলাম</strong>, <strong className="text-white font-semibold">মোহাম্মদ একরাম</strong> এবং <strong className="text-white font-semibold">গাজি মোহাম্মদ তানজিল</strong>-এর সঙ্গে দিনব্যাপী বিশেষ অফলাইন কর্মশালা <strong className="text-[#F5E5C9] font-semibold">অর্থালাপ</strong> — যেখানে থাকছে সকালের নাস্তা, দুপুরের খাবার ও সরাসরি প্রশ্নোত্তর পর্ব।
             </p>
 
             {/* Quick Speaker Avatar Strip */}
