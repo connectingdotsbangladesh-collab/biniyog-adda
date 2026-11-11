@@ -101,17 +101,39 @@ const DEFAULT_APPLICANTS: StoredApplicant[] = [
 ];
 
 /**
- * Retrieve all stored applicants from localStorage or return default demo records.
+ * Retrieve all stored applicants from localStorage (merging v2 + legacy v1 keys) or return sample records.
  */
 export function getStoredApplicants(): StoredApplicant[] {
   try {
-    const raw = localStorage.getItem(STORAGE_KEY) || localStorage.getItem(LEGACY_STORAGE_KEY);
-    if (!raw) {
+    const rawV2 = localStorage.getItem(STORAGE_KEY);
+    const rawLegacy = localStorage.getItem(LEGACY_STORAGE_KEY);
+
+    const parseSafe = (raw: string | null): StoredApplicant[] => {
+      if (!raw) return [];
+      const parsed = JSON.parse(raw);
+      return Array.isArray(parsed) ? parsed : [];
+    };
+
+    const listV2 = parseSafe(rawV2);
+    const listLegacy = parseSafe(rawLegacy);
+
+    if (listV2.length === 0 && listLegacy.length === 0) {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(DEFAULT_APPLICANTS));
       return DEFAULT_APPLICANTS;
     }
-    const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) ? parsed : DEFAULT_APPLICANTS;
+
+    // Merge legacy records that aren't already present in v2
+    const seenIds = new Set(listV2.map((item) => item.id));
+    const merged = [
+      ...listV2,
+      ...listLegacy.filter((item) => !seenIds.has(item.id)),
+    ];
+
+    if (listLegacy.length > 0 && merged.length > listV2.length) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
+    }
+
+    return merged;
   } catch (err) {
     console.error('Failed to read from localStorage:', err);
     return DEFAULT_APPLICANTS;

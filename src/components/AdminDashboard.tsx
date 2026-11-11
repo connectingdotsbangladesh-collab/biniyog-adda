@@ -24,7 +24,9 @@ import {
   MapPin,
   Mail,
   UserPlus,
-  Receipt
+  Receipt,
+  AlertTriangle,
+  Cloud
 } from 'lucide-react';
 
 interface AdminDashboardProps {
@@ -48,6 +50,9 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToSite }) 
 
   const [applicants, setApplicants] = useState<StoredApplicant[]>([]);
   const [isLoadingData, setIsLoadingData] = useState(false);
+  const [cloudStatus, setCloudStatus] = useState<'unconfigured' | 'connected' | 'auth_required'>(
+    isBackendConfigured() ? 'connected' : 'unconfigured'
+  );
 
   // Search & Filter state
   const [searchQuery, setSearchQuery] = useState('');
@@ -82,17 +87,28 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToSite }) 
     // 2. If Supabase is configured, fetch from cloud
     if (isBackendConfigured() && supabase) {
       try {
-        const { data, error } = await supabase
-          .from('registrations')
-          .select('*')
-          .order('created_at', { ascending: false });
+        const { data: sessionData } = await supabase.auth.getSession();
+        if (!sessionData?.session) {
+          setCloudStatus('auth_required');
+        } else {
+          const { data, error } = await supabase
+            .from('registrations')
+            .select('*')
+            .order('created_at', { ascending: false });
 
-        if (!error && data && data.length > 0) {
-          list = data as StoredApplicant[];
+          if (!error && data) {
+            list = data as StoredApplicant[];
+            setCloudStatus('connected');
+          } else {
+            setCloudStatus('auth_required');
+          }
         }
       } catch (err) {
         console.warn('Supabase fetch error, using local:', err);
+        setCloudStatus('auth_required');
       }
+    } else {
+      setCloudStatus('unconfigured');
     }
 
     setApplicants(list);
@@ -497,6 +513,38 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToSite }) 
 
       {/* Main Container */}
       <main className="max-w-[1360px] mx-auto px-4 sm:px-8 pt-8 space-y-6 sm:space-y-8 relative z-10">
+
+        {/* Cloud Sync Diagnostic Banner */}
+        {cloudStatus === 'unconfigured' ? (
+          <div className="p-4 sm:p-5 rounded-2xl bg-amber-950/50 border border-amber-500/50 text-amber-100 flex items-start gap-3.5 shadow-lg">
+            <AlertTriangle className="w-5 h-5 text-amber-400 flex-shrink-0 mt-0.5" />
+            <div className="text-xs sm:text-sm leading-relaxed space-y-1">
+              <p className="font-bold text-white">
+                ক্লাউড ডাটাবেস যুক্ত নেই (বর্তমানে শুধু লোকাল ব্রাউজার স্টোরেজ সক্রিয়)
+              </p>
+              <p className="text-amber-200/90">
+                বর্তমানে কোনো কেন্দ্রীয় সার্ভার/ডাটাবেস (Supabase বা Google Sheets) যুক্ত না থাকায় অন্য মানুষদের মোবাইল/কম্পিউটার থেকে করা রেজিস্ট্রেশন এখানে স্বয়ংক্রিয়ভাবে আসবে না—শুধু এই ব্রাউজারে জমা দেওয়া তথ্য দেখা যাবে। এছাড়া ডোমেইন পরিবর্তনের (<code>github.io</code> থেকে <code>orthalap.com</code>) কারণে প্রতিটি ডোমেইনের ব্রাউজার স্টোরেজ আলাদা থাকে।
+              </p>
+            </div>
+          </div>
+        ) : cloudStatus === 'auth_required' ? (
+          <div className="p-4 sm:p-5 rounded-2xl bg-sky-950/50 border border-sky-500/50 text-sky-100 flex items-start gap-3.5 shadow-lg">
+            <AlertTriangle className="w-5 h-5 text-sky-400 flex-shrink-0 mt-0.5" />
+            <div className="text-xs sm:text-sm leading-relaxed space-y-1">
+              <p className="font-bold text-white">
+                ক্লাউড ডাটা দেখতে Supabase ইমেইল দিয়ে লগইন করুন
+              </p>
+              <p className="text-sky-200/90">
+                নিরাপত্তার কারণে পাসকোড লগইনে শুধুমাত্র এই ব্রাউজারের তথ্য দেখা যায়। ডাটাবেসের সব আবেদন দেখতে লগআউট করে &ldquo;Supabase ইমেইল লগইন&rdquo; ট্যাব থেকে সাইন-ইন করুন।
+              </p>
+            </div>
+          </div>
+        ) : (
+          <div className="px-4 py-2.5 rounded-xl bg-emerald-950/40 border border-emerald-600/40 text-emerald-200 flex items-center gap-2 text-xs font-medium">
+            <Cloud className="w-4 h-4 text-emerald-400" />
+            <span>Supabase ক্লাউড ডাটাবেসের সাথে যুক্ত ও সিঙ্ক করা হয়েছে।</span>
+          </div>
+        )}
         
         {/* Metric Cards Grid */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
