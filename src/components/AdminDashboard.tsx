@@ -3,6 +3,10 @@ import {
   getStoredApplicants,
   updateApplicantStatusLocally,
   saveApplicantLocally,
+  submitRegistration,
+  fetchApplicantsFromGoogleSheets,
+  updateStatusInGoogleSheets,
+  isGoogleSheetsConfigured,
   type StoredApplicant,
   isBackendConfigured,
   supabase,
@@ -35,6 +39,7 @@ interface AdminDashboardProps {
 
 const ORGANIZER_PASSCODES = ['orthalaap2026', 'biniyog2026'];
 const AUTH_STORAGE_KEY = 'biniyog_adda_admin_auth_v1';
+const PASSCODE_STORAGE_KEY = 'orthalaap_admin_pass_v1';
 
 export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToSite }) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
@@ -51,7 +56,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToSite }) 
   const [applicants, setApplicants] = useState<StoredApplicant[]>([]);
   const [isLoadingData, setIsLoadingData] = useState(false);
   const [cloudStatus, setCloudStatus] = useState<'unconfigured' | 'connected' | 'auth_required'>(
-    isBackendConfigured() ? 'connected' : 'unconfigured'
+    isGoogleSheetsConfigured() || isBackendConfigured() ? 'connected' : 'unconfigured'
   );
 
   // Search & Filter state
@@ -83,9 +88,19 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToSite }) 
 
     // 1. Load from local durable storage first
     let list = getStoredApplicants();
+    const activePasscode = sessionStorage.getItem(PASSCODE_STORAGE_KEY) || 'orthalaap2026';
 
-    // 2. If Supabase is configured, fetch from cloud
-    if (isBackendConfigured() && supabase) {
+    // 2. If Google Sheets is configured, fetch live sheet rows
+    if (isGoogleSheetsConfigured()) {
+      const sheetRows = await fetchApplicantsFromGoogleSheets(activePasscode);
+      if (sheetRows !== null) {
+        list = sheetRows;
+        setCloudStatus('connected');
+      } else {
+        setCloudStatus('auth_required');
+      }
+    } else if (isBackendConfigured() && supabase) {
+      // 3. Else if Supabase is configured, fetch from cloud
       try {
         const { data: sessionData } = await supabase.auth.getSession();
         if (!sessionData?.session) {
@@ -123,9 +138,11 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToSite }) 
 
   const handlePasscodeLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    if (ORGANIZER_PASSCODES.includes(enteredPasscode.trim().toLowerCase())) {
+    const normalized = enteredPasscode.trim().toLowerCase();
+    if (ORGANIZER_PASSCODES.includes(normalized)) {
       setIsAuthenticated(true);
       sessionStorage.setItem(AUTH_STORAGE_KEY, 'true');
+      sessionStorage.setItem(PASSCODE_STORAGE_KEY, normalized);
       setAuthError('');
     } else {
       setAuthError('ভুল পাসকোড! সঠিক আয়োজক পাসকোড প্রদান করুন।');
@@ -160,6 +177,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToSite }) 
   const handleLogout = () => {
     setIsAuthenticated(false);
     sessionStorage.removeItem(AUTH_STORAGE_KEY);
+    sessionStorage.removeItem(PASSCODE_STORAGE_KEY);
     if (supabase) {
       supabase.auth.signOut().catch(() => {});
     }
@@ -190,7 +208,12 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToSite }) 
       );
     }
 
-    // 3. Update in Supabase if connected
+    // 3. Sync status update to Google Sheets and/or Supabase
+    const activePasscode = sessionStorage.getItem(PASSCODE_STORAGE_KEY) || 'orthalaap2026';
+    if (isGoogleSheetsConfigured()) {
+      await updateStatusInGoogleSheets(id, newStatus, activePasscode);
+    }
+
     if (isBackendConfigured() && supabase) {
       try {
         await supabase
@@ -207,7 +230,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToSite }) 
   };
 
   // Handle Manual Add Applicant
-  const handleManualAdd = (e: React.FormEvent) => {
+  const handleManualAdd = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newApplicantForm.name.trim() || !newApplicantForm.phone.trim()) {
       alert('নাম ও মোবাইল নম্বর দেওয়া আবশ্যক।');
@@ -215,7 +238,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToSite }) 
     }
 
     const cleanPhone = newApplicantForm.phone.replace(/[^0-9]/g, '');
-    const saved = saveApplicantLocally({
+    const submission = {
       eventId: 'orthalaap-2026-11-21',
       name: newApplicantForm.name,
       phoneNormalized: cleanPhone,
@@ -229,7 +252,12 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToSite }) 
       interest: newApplicantForm.interest,
       consentGiven: true,
       source: 'manual',
-    });
+    };
+
+    const saved = saveApplicantLocally(submission);
+    if (isGoogleSheetsConfigured() || isBackendConfigured()) {
+      await submitRegistration(submission);
+    }
 
     setApplicants((prev) => [saved, ...prev]);
     setIsAddModalOpen(false);
@@ -542,7 +570,11 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToSite }) 
         ) : (
           <div className="px-4 py-2.5 rounded-xl bg-emerald-950/40 border border-emerald-600/40 text-emerald-200 flex items-center gap-2 text-xs font-medium">
             <Cloud className="w-4 h-4 text-emerald-400" />
-            <span>Supabase ক্লাউড ডাটাবেসের সাথে যুক্ত ও সিঙ্ক করা হয়েছে।</span>
+            <span>
+              {isGoogleSheetsConfigured()
+                ? 'Google Sheets লাইভ ডাটাবেসের সাথে যুক্ত ও সিঙ্ক করা হয়েছে।'
+                : 'Supabase ক্লাউড ডাটাবেসের সাথে যুক্ত ও সিঙ্ক করা হয়েছে।'}
+            </span>
           </div>
         )}
         

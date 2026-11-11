@@ -2,6 +2,17 @@ import { createClient, SupabaseClient } from '@supabase/supabase-js';
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || '';
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
+const envGoogleSheetsUrl = import.meta.env.VITE_GOOGLE_SHEETS_URL || '';
+
+// Optional hardcoded Google Apps Script Web App URL (set via env var or paste /exec URL here)
+const GOOGLE_SHEETS_WEB_APP_URL = envGoogleSheetsUrl;
+
+export const isGoogleSheetsConfigured = (): boolean => {
+  return Boolean(
+    GOOGLE_SHEETS_WEB_APP_URL &&
+    GOOGLE_SHEETS_WEB_APP_URL.startsWith('https://script.google.com/')
+  );
+};
 
 export const isBackendConfigured = (): boolean => {
   return Boolean(
@@ -10,6 +21,10 @@ export const isBackendConfigured = (): boolean => {
     supabaseUrl !== 'https://your-project.supabase.co' &&
     supabaseAnonKey !== 'your-anon-key-here'
   );
+};
+
+export const isAnyCloudConfigured = (): boolean => {
+  return isGoogleSheetsConfigured() || isBackendConfigured();
 };
 
 export const supabase: SupabaseClient | null = isBackendConfigured()
@@ -206,7 +221,59 @@ export function updateApplicantStatusLocally(
 }
 
 /**
- * Submits registration. Saves locally and optionally syncs with Supabase.
+ * Fetch applicants from Google Sheets Apps Script Web App
+ */
+export async function fetchApplicantsFromGoogleSheets(
+  passcode: string
+): Promise<StoredApplicant[] | null> {
+  if (!isGoogleSheetsConfigured()) return null;
+  try {
+    const separator = GOOGLE_SHEETS_WEB_APP_URL.includes('?') ? '&' : '?';
+    const url = `${GOOGLE_SHEETS_WEB_APP_URL}${separator}passcode=${encodeURIComponent(passcode)}`;
+    const response = await fetch(url, { method: 'GET' });
+    if (!response.ok) return null;
+    const json = await response.json();
+    if (json?.success && Array.isArray(json.data)) {
+      return json.data as StoredApplicant[];
+    }
+    return null;
+  } catch (err) {
+    console.warn('Google Sheets fetch failed:', err);
+    return null;
+  }
+}
+
+/**
+ * Update applicant status in Google Sheets
+ */
+export async function updateStatusInGoogleSheets(
+  id: string,
+  status: 'interested' | 'contacted' | 'confirmed' | 'cancelled',
+  passcode: string
+): Promise<boolean> {
+  if (!isGoogleSheetsConfigured()) return false;
+  try {
+    const response = await fetch(GOOGLE_SHEETS_WEB_APP_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({
+        action: 'updateStatus',
+        passcode,
+        id,
+        status,
+      }),
+    });
+    if (!response.ok) return false;
+    const json = await response.json();
+    return Boolean(json?.success);
+  } catch (err) {
+    console.warn('Google Sheets status update failed:', err);
+    return false;
+  }
+}
+
+/**
+ * Submits registration. Saves locally and syncs to Google Sheets and/or Supabase.
  */
 export async function submitRegistration(data: RegistrationSubmission): Promise<SubmissionResponse> {
   // Check honeypot spam
@@ -214,10 +281,46 @@ export async function submitRegistration(data: RegistrationSubmission): Promise<
     return { success: true, message: 'registered' };
   }
 
-  // Always save locally so no applicant is ever lost
+  // Always save locally so the browser retains a copy
   saveApplicantLocally(data);
 
-  // If Supabase is configured, also sync to cloud database
+  // 1. Sync to Google Sheets if configured
+  if (isGoogleSheetsConfigured()) {
+    try {
+      const response = await fetch(GOOGLE_SHEETS_WEB_APP_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({
+          eventId: data.eventId,
+          name: data.name.trim(),
+          phoneNormalized: data.phoneNormalized,
+          occupation: data.occupation,
+          area: data.area.trim(),
+          email: data.email?.trim() || '',
+          interest: data.interest?.trim() || '',
+          paymentMethod: data.paymentMethod,
+          paymentSenderPhone: data.paymentSenderPhone,
+          transactionId: data.transactionId.trim().toUpperCase(),
+          consentGiven: data.consentGiven,
+          honeypot: data.honeypot || '',
+          source: data.source || 'direct',
+        }),
+      });
+      if (response.ok) {
+        const resJson = await response.json();
+        if (resJson?.success) {
+          return { success: true, message: 'registered', duplicate: resJson.duplicate };
+        }
+        if (resJson?.error) {
+          return { success: false, error: resJson.error };
+        }
+      }
+    } catch (sheetErr) {
+      console.warn('Google Sheets sync error:', sheetErr);
+    }
+  }
+
+  // 2. If Supabase is configured, also sync to cloud database
   if (isBackendConfigured() && supabase) {
     try {
       const { data: rpcData, error: rpcError } = await supabase.rpc('submit_registration', {
